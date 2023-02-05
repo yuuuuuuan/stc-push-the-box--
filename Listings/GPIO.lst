@@ -1,0 +1,37 @@
+C51 COMPILER V9.56.0.0   GPIO                                                              02/05/2023 06:09:39 PAGE 1   
+
+
+C51 COMPILER V9.56.0.0, COMPILATION OF MODULE GPIO
+OBJECT MODULE PLACED IN .\Objects\GPIO.obj
+COMPILER INVOKED BY: D:\Program Files\Keil_v5\C51\BIN\C51.EXE Code\GPIO.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PR
+                    -INT(.\Listings\GPIO.lst) TABS(2) OBJECT(.\Objects\GPIO.obj)
+
+line level    source
+
+   1          //端口初始化函数
+   2          #include "STC15F.H"
+   3          #include "intrins.h"
+   4          #include "GPIO.H"
+   5          void GPIO(void)
+   6              {
+   7   1            P0M1 = 0; P0M0 = 0; //
+   8   1            P1M1 = 0; P1M0 = 0; //
+   9   1            P2M1 = 0; P2M0 = 0; //
+  10   1            P3M1 = 0; P3M0 = 0; //
+  11   1            P4M1 = 0; P4M0 = 0; //
+  12   1            P5M1 = 0; P5M0 = 0; //
+  13   1          }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     26    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

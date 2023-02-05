@@ -1,0 +1,360 @@
+C51 COMPILER V9.56.0.0   LCD12864                                                          02/05/2023 06:10:36 PAGE 1   
+
+
+C51 COMPILER V9.56.0.0, COMPILATION OF MODULE LCD12864
+OBJECT MODULE PLACED IN .\Objects\LCD12864.obj
+COMPILER INVOKED BY: D:\Program Files\Keil_v5\C51\BIN\C51.EXE Code\LCD12864.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEN
+                    -D PRINT(.\Listings\LCD12864.lst) TABS(2) OBJECT(.\Objects\LCD12864.obj)
+
+line level    source
+
+   1          
+   2          /*************  功能说明    **************
+   3          
+   4          ST7920的基本驱动程序
+   5          
+   6          ******************************************/
+   7          
+   8          typedef   unsigned char u8 ;
+   9          typedef   unsigned int  u16 ;
+  10          typedef   unsigned long u32 ;
+  11          #include    "reg51.h"
+  12          #include    "intrins.h"
+  13          #include    "LCD12864.h"
+  14          #define     MAIN_Fosc       11059200L   //定义主时钟
+  15          
+  16          
+  17          sfr TH2  = 0xD6;
+  18          sfr TL2  = 0xD7;
+  19          sfr IE2   = 0xAF;
+  20          sfr INT_CLKO = 0x8F;
+  21          sfr AUXR = 0x8E;
+  22          sfr AUXR1 = 0xA2;
+  23          sfr P_SW1 = 0xA2;
+  24          sfr P_SW2 = 0xBA;
+  25          sfr S2CON = 0x9A;
+  26          sfr S2BUF = 0x9B;
+  27          
+  28          sfr ADC_CONTR = 0xBC;   //带AD系列
+  29          sfr ADC_RES   = 0xBD;   //带AD系列
+  30          sfr ADC_RESL  = 0xBE;   //带AD系列
+  31          sfr P1ASF = 0x9D;   //只写，模拟输入(AD或LVD)选择
+  32          
+  33          sfr P4   = 0xC0;
+  34          sfr P5   = 0xC8;
+  35          sfr P6   = 0xE8;
+  36          sfr P7   = 0xF8;
+  37          sfr P1M1 = 0x91;    //PxM1.n,PxM0.n     =00--->Standard,    01--->push-pull
+  38          sfr P1M0 = 0x92;    //                  =10--->pure input,  11--->open drain
+  39          sfr P0M1 = 0x93;
+  40          sfr P0M0 = 0x94;
+  41          sfr P2M1 = 0x95;
+  42          sfr P2M0 = 0x96;
+  43          sfr P3M1 = 0xB1;
+  44          sfr P3M0 = 0xB2;
+  45          sfr P4M1 = 0xB3;
+  46          sfr P4M0 = 0xB4;
+  47          sfr P5M1 = 0xC9;
+  48          sfr P5M0 = 0xCA;
+  49          sfr P6M1 = 0xCB;
+  50          sfr P6M0 = 0xCC;
+  51          sfr P7M1 = 0xE1;
+  52          sfr P7M0 = 0xE2;
+  53          
+  54          sbit P00 = P0^0;
+C51 COMPILER V9.56.0.0   LCD12864                                                          02/05/2023 06:10:36 PAGE 2   
+
+  55          sbit P01 = P0^1;
+  56          sbit P02 = P0^2;
+  57          sbit P03 = P0^3;
+  58          sbit P04 = P0^4;
+  59          sbit P05 = P0^5;
+  60          sbit P06 = P0^6;
+  61          sbit P07 = P0^7;
+  62          sbit P10 = P1^0;
+  63          sbit P11 = P1^1;
+  64          sbit P12 = P1^2;
+  65          sbit P13 = P1^3;
+  66          sbit P14 = P1^4;
+  67          sbit P15 = P1^5;
+  68          sbit P16 = P1^6;
+  69          sbit P17 = P1^7;
+  70          sbit P20 = P2^0;
+  71          sbit P21 = P2^1;
+  72          sbit P22 = P2^2;
+  73          sbit P23 = P2^3;
+  74          sbit P24 = P2^4;
+  75          sbit P25 = P2^5;
+  76          sbit P26 = P2^6;
+  77          sbit P27 = P2^7;
+  78          sbit P30 = P3^0;
+  79          sbit P31 = P3^1;
+  80          sbit P32 = P3^2;
+  81          sbit P33 = P3^3;
+  82          sbit P34 = P3^4;
+  83          sbit P35 = P3^5;
+  84          sbit P36 = P3^6;
+  85          sbit P37 = P3^7;
+  86          sbit P40 = P4^0;
+  87          sbit P41 = P4^1;
+  88          sbit P42 = P4^2;
+  89          sbit P43 = P4^3;
+  90          sbit P44 = P4^4;
+  91          sbit P45 = P4^5;
+  92          sbit P46 = P4^6;
+  93          sbit P47 = P4^7;
+  94          sbit P50 = P5^0;
+  95          sbit P51 = P5^1;
+  96          sbit P52 = P5^2;
+  97          sbit P53 = P5^3;
+  98          sbit P54 = P5^4;
+  99          sbit P55 = P5^5;
+ 100          sbit P56 = P5^6;
+ 101          sbit P57 = P5^7;
+ 102          
+ 103          
+ 104          
+ 105          sbit    P_HC595_SER   = P4^0;   //pin 14    SER     data input
+ 106          sbit    P_HC595_RCLK  = P5^4;   //pin 12    RCLk    store (latch) clock
+ 107          sbit    P_HC595_SRCLK = P4^3;   //pin 11    SRCLK   Shift data clock
+ 108          
+ 109          sbit    LCD_RS = P2^5;  //定义引脚
+ 110          sbit    LCD_RW = P2^6;
+ 111          sbit    LCD_E  = P2^7;
+ 112          sbit    PSB    = P2^4;      //PSB脚为12864-12系列的串、并通讯功能切换，我们使用8位并�
+             -��接口，PSB=1
+ 113          sbit    LCD_RESET   =   P2^3;   //  17---RESET  L-->Enable
+ 114          #define LCD_Data P0
+ 115          
+C51 COMPILER V9.56.0.0   LCD12864                                                          02/05/2023 06:10:36 PAGE 3   
+
+ 116          
+ 117          
+ 118          #define Busy    0x80 //用于检测LCD状态字中的Busy标识
+ 119          void    delay_ms(u16 ms);
+ 120          void    DisableHC595(void);
+ 121          void    WriteDataLCD(u8 WDLCD);
+ 122          void    WriteCommandLCD(u8 WCLCD,BuysC);
+ 123          u8      ReadDataLCD(void);
+ 124          u8      ReadStatusLCD(void);
+ 125          void    LCDInit(void);
+ 126          void    LCDClear(void);
+ 127          void    LCDFlash(void);
+ 128          void    DisplayOneChar(u8 X, u8 Y, u8 DData);
+ 129          void    DisplayListChar(u8 X, u8 Y, u8 code *DData);
+ 130          void    DisplayImage (u8 code *DData);
+ 131          
+ 132          
+ 133          
+ 134              //128*64点阵图形数据
+ 135          
+ 136          
+ 137          
+ 138          
+ 139          
+ 140          
+ 141          
+ 142          //========================================================================
+ 143          // 函数: void  delay_ms(u8 ms)
+ 144          // 描述: 延时函数。
+ 145          // 参数: ms,要延时的ms数, 这里只支持1~255ms. 自动适应主时钟.
+ 146          // 返回: none.
+ 147          // 版本: VER1.0
+ 148          // 日期: 2013-4-1
+ 149          // 备注: 
+ 150          //========================================================================
+ 151          void  delay_ms(u16 ms)
+ 152          {
+ 153   1           u16 i;
+ 154   1           do{
+ 155   2                i = MAIN_Fosc / 13000;
+ 156   2                while(--i)    ;   //14T per loop
+ 157   2           }while(--ms);
+ 158   1      }
+ 159          
+ 160          void DisableHC595(void)
+ 161          {       
+ 162   1          u8  i;
+ 163   1          P_HC595_SER   = 1;
+ 164   1          for(i=0; i<20; i++)
+ 165   1          {
+ 166   2              P_HC595_SRCLK = 1;
+ 167   2              P_HC595_SRCLK = 0;
+ 168   2          }
+ 169   1          P_HC595_RCLK = 1;
+ 170   1          P_HC595_RCLK = 0;                           //锁存输出数据
+ 171   1          P_HC595_RCLK = 1;
+ 172   1          P_HC595_RCLK = 0;                           //锁存输出数据
+ 173   1      }
+ 174          
+ 175          
+ 176          //******************************************
+ 177          void    LCD_delay(void)
+C51 COMPILER V9.56.0.0   LCD12864                                                          02/05/2023 06:10:36 PAGE 4   
+
+ 178          {
+ 179   1          _nop_();
+ 180   1          _nop_();
+ 181   1          _nop_();
+ 182   1          _nop_();
+ 183   1          _nop_();
+ 184   1          _nop_();
+ 185   1          _nop_();
+ 186   1          _nop_();
+ 187   1          _nop_();
+ 188   1          _nop_();
+ 189   1      }
+ 190          
+ 191          
+ 192          //写数据
+ 193          void WriteDataLCD(u8 WDLCD)
+ 194          {
+ 195   1          ReadStatusLCD(); //检测忙 
+ 196   1          LCD_RS = 1;
+ 197   1          LCD_RW = 0;
+ 198   1          LCD_Data = WDLCD;
+ 199   1              LCD_delay();
+ 200   1          LCD_E = 1;
+ 201   1          LCD_delay();
+ 202   1          LCD_E = 0;
+ 203   1      }
+ 204          
+ 205          //写指令
+ 206          void WriteCommandLCD(u8 WCLCD,BuysC) //BuysC为0时忽略忙检测
+ 207          {
+ 208   1          if (BuysC) ReadStatusLCD(); //根据需要检测忙 
+ 209   1          LCD_RS = 0;
+ 210   1          LCD_RW = 0; 
+ 211   1          LCD_Data = WCLCD;
+ 212   1              LCD_delay();
+ 213   1          LCD_E = 1; 
+ 214   1          LCD_delay();
+ 215   1          LCD_E = 0;  
+ 216   1      }
+ 217          
+ 218          //读状态
+ 219          u8 ReadStatusLCD(void)
+ 220          {
+ 221   1          LCD_Data = 0xFF; 
+ 222   1          LCD_RS = 0;
+ 223   1          LCD_RW = 1; 
+ 224   1              LCD_delay();
+ 225   1          LCD_E = 1;
+ 226   1              LCD_delay();
+ 227   1          while (LCD_Data & Busy); //检测忙信号
+ 228   1          LCD_E = 0;
+ 229   1          return(LCD_Data);
+ 230   1      }
+ 231          
+ 232          void LCDInit(void) //LCM初始化
+ 233          {
+ 234   1          PSB = 1;    //并口
+ 235   1      //  PSB = 0;    //SPI口
+ 236   1          delay_ms(10);
+ 237   1          LCD_RESET = 0;
+ 238   1          delay_ms(10);
+ 239   1          LCD_RESET = 1;
+C51 COMPILER V9.56.0.0   LCD12864                                                          02/05/2023 06:10:36 PAGE 5   
+
+ 240   1          delay_ms(100);
+ 241   1          
+ 242   1          WriteCommandLCD(0x30,1); //显示模式设置,开始要求每次检测忙信号
+ 243   1          WriteCommandLCD(0x01,1); //显示清屏
+ 244   1          WriteCommandLCD(0x06,1); // 显示光标移动设置
+ 245   1          WriteCommandLCD(0x0C,1); // 显示开及光标设置
+ 246   1      }
+ 247          
+ 248          void LCDClear(void) //清屏
+ 249          {
+ 250   1          WriteCommandLCD(0x01,1); //显示清屏
+ 251   1          WriteCommandLCD(0x34,1); // 显示光标移动设置
+ 252   1          WriteCommandLCD(0x30,1); // 显示开及光标设置
+ 253   1      }
+ 254          
+ 255          
+ 256          //按指定位置显示一串字符
+ 257          void DisplayListChar(u8 X, u8 Y, u8 code *DData)
+ 258          {
+ 259   1          u8 ListLength,X2;
+ 260   1          ListLength = 0;
+ 261   1          X2 = X;
+ 262   1          if(Y < 1)   Y=1;
+ 263   1          if(Y > 4)   Y=4;
+ 264   1          X &= 0x0F; //限制X不能大于16，Y在1-4之内
+ 265   1          switch(Y)
+ 266   1          {
+ 267   2              case 1: X2 |= 0X80; break;  //根据行数来选择相应地址
+ 268   2              case 2: X2 |= 0X90; break;
+ 269   2              case 3: X2 |= 0X88; break;
+ 270   2              case 4: X2 |= 0X98; break;
+ 271   2          }
+ 272   1          WriteCommandLCD(X2, 1); //发送地址码
+ 273   1          while (DData[ListLength] >= 0x20) //若到达字串尾则退出
+ 274   1          {
+ 275   2              if (X <= 0x0F) //X坐标应小于0xF
+ 276   2              {
+ 277   3                  WriteDataLCD(DData[ListLength]); //
+ 278   3                  ListLength++;
+ 279   3                  X++;
+ 280   3              }
+ 281   2          }
+ 282   1      }
+ 283          
+ 284          //图形显示122*32
+ 285          void DisplayImage (u8 code *DData)
+ 286          {
+ 287   1          u8 x,y,i;
+ 288   1          unsigned int tmp=0;
+ 289   1          for(i=0;i<9;)       //分两屏，上半屏和下半屏，因为起始地址不同，需要分开
+ 290   1          {
+ 291   2              for(x=0;x<32;x++)   //32行
+ 292   2              {
+ 293   3                  WriteCommandLCD(0x34,1);
+ 294   3                  WriteCommandLCD((0x80+x),1);//列地址
+ 295   3                  WriteCommandLCD((0x80+i),1);    //行地址，下半屏，即第三行地址0X88
+ 296   3                  WriteCommandLCD(0x30,1);        
+ 297   3                  for(y=0;y<16;y++)   
+ 298   3                      WriteDataLCD(DData[tmp+y]);//读取数据写入LCD
+ 299   3                  tmp+=16;        
+ 300   3              }
+ 301   2              i+=8;
+C51 COMPILER V9.56.0.0   LCD12864                                                          02/05/2023 06:10:36 PAGE 6   
+
+ 302   2          }
+ 303   1          WriteCommandLCD(0x36,1);    //扩充功能设定
+ 304   1          WriteCommandLCD(0x30,1);
+ 305   1      }
+ 306          
+ 307          void DisplayClear (void)
+ 308          {
+ 309   1          u8 x,y,i;
+ 310   1          for(i=0;i<9;)       //分两屏，上半屏和下半屏，因为起始地址不同，需要分开
+ 311   1          {
+ 312   2              for(x=0;x<32;x++)   //32行
+ 313   2              {
+ 314   3                  WriteCommandLCD(0x34,1);
+ 315   3                  WriteCommandLCD((0x80+x),1);//列地址
+ 316   3                  WriteCommandLCD((0x80+i),1);    //行地址，下半屏，即第三行地址0X88
+ 317   3                  WriteCommandLCD(0x30,1);        
+ 318   3                  for(y=0;y<16;y++)   
+ 319   3                      WriteDataLCD(0x00);//读取数据写入LCD      
+ 320   3              }
+ 321   2              i+=8;
+ 322   2          }
+ 323   1          WriteCommandLCD(0x36,1);    //扩充功能设定
+ 324   1          WriteCommandLCD(0x30,1);
+ 325   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    557    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----      16
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

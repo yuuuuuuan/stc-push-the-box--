@@ -1,0 +1,28 @@
+C51 COMPILER V9.56.0.0   SEGMENT                                                           02/05/2023 04:40:58 PAGE 1   
+
+
+C51 COMPILER V9.56.0.0, COMPILATION OF MODULE SEGMENT
+OBJECT MODULE PLACED IN .\Objects\Segment.obj
+COMPILER INVOKED BY: D:\Program Files\Keil_v5\C51\BIN\C51.EXE Code\Segment.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND
+                    - PRINT(.\Listings\Segment.lst) TABS(2) OBJECT(.\Objects\Segment.obj)
+
+line level    source
+
+   1          #include "STC15F.h"
+   2          #include "intrins.h"
+   3          #include "Segment.h"
+   4          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   ----    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

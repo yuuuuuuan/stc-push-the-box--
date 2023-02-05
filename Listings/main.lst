@@ -1,0 +1,701 @@
+C51 COMPILER V9.56.0.0   MAIN                                                              02/05/2023 09:30:57 PAGE 1   
+
+
+C51 COMPILER V9.56.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: D:\Program Files\Keil_v5\C51\BIN\C51.EXE Code\main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PR
+                    -INT(.\Listings\main.lst) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include "STC15F.h"
+   2          #include "intrins.h"
+   3          #include "Delay.h"
+   4          #include "KeyScan.h"
+   5          #include "LCD12864.h"
+   6          #include "GPIO.H"
+   7          #include "Serial2.h"
+   8          
+   9          #define BLANK 0
+  10          #define WALL 1
+  11          #define PLAYER 2
+  12          #define BOX 3
+  13          #define DES 4
+  14          #define LEVEL 1
+  15          #define ROW 8
+  16          #define COL 8
+  17          #define MOVE_UP 2
+  18          #define MOVE_DOWN 6
+  19          #define MOVE_LEFT 5
+  20          #define MOVE_RIGHT 7
+  21          
+  22          
+  23          void game_draw(void);
+  24          void game_move(void);
+  25          void Displaycube (u8 r,u8 c,u8 code *DData);
+  26          void     DisplayClear (void);
+  27          u8 button = 0X55;
+  28          u8  Tcount=0;
+  29          u8 PLAYER_ROW;
+  30          u8 PLAYER_COL;
+  31          u8 cookie[]={
+  32            0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+  33          };
+  34          u8 MAP[LEVEL][ROW][COL] = 
+  35          {
+  36            {
+  37              {0,0,0,1,1,1,0,0},
+  38              {0,0,0,1,4,1,0,0},
+  39              {0,0,0,1,0,1,0,0},
+  40              {1,1,1,1,3,1,1,1},
+  41              {1,4,0,3,2,3,4,1},
+  42              {1,1,1,1,3,1,1,1},
+  43              {0,0,0,1,4,1,0,0},
+  44              {0,0,0,1,1,1,0,0}
+  45            }
+  46          };
+  47          
+  48          code u8 Img_DB[64] = 
+  49          {
+  50            0xFF,0xC3,0xA5,0x99,0x99,0xA5,0xC3,0xFF
+  51          };
+  52          
+  53          
+  54          code u8 Img_DP[64] = 
+C51 COMPILER V9.56.0.0   MAIN                                                              02/05/2023 09:30:57 PAGE 2   
+
+  55          {
+  56            0x18,0x3C,0x7E,0x5A,0x5A,0x5A,0x3C,0x24
+  57          };
+  58          
+  59          code u8 Img_DES[64] = 
+  60          {
+  61            0x00,0x18,0x24,0x42,0x42,0x24,0x18,0x00
+  62          };
+  63          
+  64          code u8 Img_BLANK[64] = 
+  65          {
+  66            0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+  67          };
+  68          
+  69          code u8 Img_BOX[64] = 
+  70          {
+  71            0xFF,0x81,0xFF,0x81,0x81,0xFF,0x81,0xFF
+  72          };
+  73          
+  74          code u8 Img_PLAYER[64] = 
+  75          {
+  76            0x18,0x18,0x7E,0x5A,0x5A,0x18,0x24,0x24
+  77          };
+  78          
+  79          code u8 Img_WALL[64] = 
+  80          {
+  81            0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff
+  82          };
+  83          
+  84          
+  85          
+  86          u8 DES_CNT[LEVEL] = {4};
+  87          u8 DESBOX = 0;
+  88          u8 LEVEL_CNT = 0;
+  89          
+  90          u8  code open_line1[] = {" GAME"};
+  91          u8  code open_line2[] = {" Push the Boxes"};
+  92          u8  code open_line3[] = {" OPEN"};
+  93          u8  code open_line4[] = {" MadeByYuuuan"};
+  94          
+  95          u8  code frame_line1[] = {"TIME"};
+  96          u8  code frame_line2[] = {""};
+  97          u8  code frame_line3[] = {"GOAT"};
+  98          u8  code frame_line4[] = {""};
+  99          
+ 100          code u8 frame_img[1024] = {
+ 101          
+ 102          0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,
+ 103          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 104          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 105          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 106          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 107          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 108          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 109          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 110          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 111          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 112          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 113          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 114          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 115          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 116          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+C51 COMPILER V9.56.0.0   MAIN                                                              02/05/2023 09:30:57 PAGE 3   
+
+ 117          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 118          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 119          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 120          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 121          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 122          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 123          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 124          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 125          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 126          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 127          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 128          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 129          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 130          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 131          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 132          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 133          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 134          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 135          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 136          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 137          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 138          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 139          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 140          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 141          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 142          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 143          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 144          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 145          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 146          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 147          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 148          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 149          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 150          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 151          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 152          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 153          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 154          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 155          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 156          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 157          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 158          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 159          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 160          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 161          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 162          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 163          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 164          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 165          0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,
+ 166          
+ 167              
+ 168          };
+ 169          
+ 170          
+ 171          
+ 172          void main(void)
+ 173          {
+ 174   1          
+ 175   1          GPIO();
+ 176   1          TMOD=0x00; //T0 T1方式0：16位自动重装定时器模式，使用12分频系统时钟   
+ 177   1          TH0=0x3C;  //@12MHZ 定时50ms，中断20次为1s
+ 178   1          TL0=0xB0;
+C51 COMPILER V9.56.0.0   MAIN                                                              02/05/2023 09:30:57 PAGE 4   
+
+ 179   1          ET0=1;     //开启定时器T0中断
+ 180   1          TR0=1;     //启动定时器，开始计时
+ 181   1          
+ 182   1            
+ 183   1            
+ 184   1        
+ 185   1          DisableHC595();     //禁止掉学习板上的HC595显示，省电
+ 186   1      
+ 187   1          delay_ms(100); //启动等待，等LCD讲入工作状态
+ 188   1          LCDInit(); //LCM初始化
+ 189   1          delay_ms(5); //延时片刻(可不要)
+ 190   1          LCDClear();
+ 191   1          DisplayClear ();
+ 192   1        if(0)
+ 193   1        {
+ 194   2          while(1)
+ 195   2          {
+ 196   3          
+ 197   3            button=KeyScan();
+ 198   3            delay_ms(5);
+ 199   3            if(button!=KeyScan())
+ 200   3            {
+ 201   4              button = 0X55;
+ 202   4            }
+ 203   3            DisplayListChar(0,1,open_line1);
+ 204   3            DisplayListChar(0,2,open_line2);
+ 205   3            DisplayListChar(0,3,open_line3);
+ 206   3            DisplayListChar(0,4,open_line4);
+ 207   3      
+ 208   3          }
+ 209   2        }
+ 210   1        if(1)
+ 211   1        {
+ 212   2          while(1)
+ 213   2          {
+ 214   3            game_draw();
+ 215   3            delay_ms(5);
+ 216   3            game_move();
+ 217   3            delay_ms(5);
+ 218   3          }
+ 219   2        }
+ 220   1      }
+ 221          
+ 222          void Displaycube (u8 r,u8 c,u8 code *DData)
+ 223          
+ 224          {
+ 225   1          u8 x,i;
+ 226   1          i=c%2;
+ 227   1          if(r<4)       
+ 228   1          {
+ 229   2              for(x=0;x<8;x++)
+ 230   2              {
+ 231   3                  WriteCommandLCD(0x36,1);
+ 232   3                  WriteCommandLCD((0x80+r*8+x),1);
+ 233   3                  WriteCommandLCD((0x80+c/2),1);    
+ 234   3                  WriteCommandLCD(0x30,1);        
+ 235   3                  if(i==0)
+ 236   3                  {
+ 237   4                    WriteDataLCD(DData[x]);
+ 238   4                    cookie[x]=DData[x];
+ 239   4                  }
+ 240   3                  else
+C51 COMPILER V9.56.0.0   MAIN                                                              02/05/2023 09:30:57 PAGE 5   
+
+ 241   3                    
+ 242   3                  {
+ 243   4                    
+ 244   4                    WriteDataLCD(cookie[x]);
+ 245   4                    WriteDataLCD(DData[x]);
+ 246   4                  }
+ 247   3              }
+ 248   2          }
+ 249   1          if(r>=4)      
+ 250   1          {
+ 251   2              for(x=0;x<8;x++)
+ 252   2              {
+ 253   3                  WriteCommandLCD(0x36,1);
+ 254   3                  WriteCommandLCD((0x80+(r-4)*8+x),1);
+ 255   3                  WriteCommandLCD((0x88+c/2),1);    
+ 256   3                  WriteCommandLCD(0x30,1);        
+ 257   3                  if(i==0)
+ 258   3                  {
+ 259   4                    WriteDataLCD(DData[x]);
+ 260   4                    cookie[x]=DData[x];
+ 261   4                  }
+ 262   3                  else
+ 263   3                    
+ 264   3                  {
+ 265   4                    
+ 266   4                    WriteDataLCD(cookie[x]);
+ 267   4                    WriteDataLCD(DData[x]);
+ 268   4                  }
+ 269   3              }
+ 270   2          }
+ 271   1          WriteCommandLCD(0x34,1);
+ 272   1          WriteCommandLCD(0x30,1);
+ 273   1      }
+ 274          
+ 275          void game_draw(void)
+ 276          {
+ 277   1        u8 j=0,k=0;
+ 278   1        for(j=0;j<ROW;j++)
+ 279   1        { 
+ 280   2          for(k=0;k<COL;k++)
+ 281   2          {
+ 282   3            if(MAP[LEVEL_CNT][j][k]==PLAYER||MAP[0][j][k]==PLAYER+DES)
+ 283   3            {
+ 284   4              PLAYER_ROW=j;
+ 285   4              PLAYER_COL=k;
+ 286   4            }
+ 287   3            
+ 288   3            if(MAP[LEVEL_CNT][j][k]==DES+BOX)
+ 289   3            {
+ 290   4              DESBOX++;
+ 291   4              if(DES_CNT[LEVEL_CNT]==DESBOX)
+ 292   4              {
+ 293   5                DESBOX = 0;
+ 294   5                LEVEL_CNT++;
+ 295   5              }
+ 296   4            }
+ 297   3            switch(MAP[LEVEL_CNT][j][k])
+ 298   3            {
+ 299   4              case BLANK:
+ 300   4                Displaycube (j,k,Img_BLANK);
+ 301   4                break;
+ 302   4              case WALL:
+C51 COMPILER V9.56.0.0   MAIN                                                              02/05/2023 09:30:57 PAGE 6   
+
+ 303   4                Displaycube (j,k,Img_WALL);
+ 304   4                break;
+ 305   4              case PLAYER:
+ 306   4                Displaycube (j,k,Img_PLAYER);
+ 307   4                break;
+ 308   4              case BOX:
+ 309   4                Displaycube (j,k,Img_BOX);
+ 310   4                break;
+ 311   4              case DES:
+ 312   4                Displaycube (j,k,Img_DES);
+ 313   4                break;
+ 314   4              case PLAYER+DES:
+ 315   4                Displaycube (j,k,Img_DP);
+ 316   4                break;
+ 317   4              case BOX+DES:
+ 318   4                Displaycube (j,k,Img_DB);
+ 319   4                break;
+ 320   4            }
+ 321   3      
+ 322   3          }
+ 323   2        }
+ 324   1      }
+ 325          
+ 326          
+ 327          
+ 328          void game_move(void)
+ 329          {
+ 330   1        delay_ms(5);
+ 331   1        button=KeyScan();
+ 332   1        delay_ms(5);
+ 333   1        switch(button)
+ 334   1        {
+ 335   2              case MOVE_UP:
+ 336   2                switch(MAP[LEVEL_CNT][PLAYER_ROW-1][PLAYER_COL])
+ 337   2                {
+ 338   3                  case BOX:
+ 339   3                    if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]==PLAYER+DES)
+ 340   3                    {
+ 341   4                      if(MAP[LEVEL_CNT][PLAYER_ROW-2][PLAYER_COL]==BLANK)
+ 342   4                      {
+ 343   5                        MAP[LEVEL_CNT][PLAYER_ROW-2][PLAYER_COL]=BOX;
+ 344   5                        MAP[LEVEL_CNT][PLAYER_ROW-1][PLAYER_COL]=PLAYER;
+ 345   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=DES;
+ 346   5                      }
+ 347   4                      else if(MAP[LEVEL_CNT][PLAYER_ROW-2][PLAYER_COL]==DES)
+ 348   4                      {
+ 349   5                        MAP[LEVEL_CNT][PLAYER_ROW-2][PLAYER_COL]=BOX+DES;
+ 350   5                        MAP[LEVEL_CNT][PLAYER_ROW-1][PLAYER_COL]=PLAYER;
+ 351   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=DES;
+ 352   5                      }
+ 353   4                      else
+ 354   4                      {
+ 355   5                      
+ 356   5                      }
+ 357   4                    }
+ 358   3                    
+ 359   3                    else
+ 360   3                    {
+ 361   4                      if(MAP[LEVEL_CNT][PLAYER_ROW-2][PLAYER_COL]==BLANK)
+ 362   4                      {
+ 363   5                        MAP[LEVEL_CNT][PLAYER_ROW-2][PLAYER_COL]=BOX;
+ 364   5                        MAP[LEVEL_CNT][PLAYER_ROW-1][PLAYER_COL]=PLAYER;
+C51 COMPILER V9.56.0.0   MAIN                                                              02/05/2023 09:30:57 PAGE 7   
+
+ 365   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=BLANK;
+ 366   5                      }
+ 367   4                      else if(MAP[LEVEL_CNT][PLAYER_ROW-2][PLAYER_COL]==DES)
+ 368   4                      {
+ 369   5                        MAP[LEVEL_CNT][PLAYER_ROW-2][PLAYER_COL]=BOX+DES;
+ 370   5                        MAP[LEVEL_CNT][PLAYER_ROW-1][PLAYER_COL]=PLAYER;
+ 371   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=BLANK;
+ 372   5                      }
+ 373   4                      else
+ 374   4                      {
+ 375   5                      
+ 376   5                      }
+ 377   4                    }
+ 378   3                  break;
+ 379   3                  
+ 380   3                  case WALL:
+ 381   3                    
+ 382   3                  break;
+ 383   3                  
+ 384   3                  case BLANK:
+ 385   3                    if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]==PLAYER+DES)
+ 386   3                    {
+ 387   4                      MAP[LEVEL_CNT][PLAYER_ROW-1][PLAYER_COL]=PLAYER;
+ 388   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=DES;
+ 389   4                    }
+ 390   3                    else
+ 391   3                    {
+ 392   4                      MAP[LEVEL_CNT][PLAYER_ROW-1][PLAYER_COL]=PLAYER;
+ 393   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=BLANK;
+ 394   4                    }
+ 395   3                  
+ 396   3                  break;
+ 397   3                  
+ 398   3                  case DES:
+ 399   3                    if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]==PLAYER+DES)
+ 400   3                    {
+ 401   4                      MAP[LEVEL_CNT][PLAYER_ROW-1][PLAYER_COL]=PLAYER+DES;
+ 402   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=DES;
+ 403   4                    }
+ 404   3                    else
+ 405   3                    {
+ 406   4                      MAP[LEVEL_CNT][PLAYER_ROW-1][PLAYER_COL]=PLAYER+DES;
+ 407   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=BLANK;
+ 408   4                    }
+ 409   3                  
+ 410   3                  break;
+ 411   3                }
+ 412   2                break;
+ 413   2              case MOVE_DOWN:
+ 414   2                switch(MAP[LEVEL_CNT][PLAYER_ROW+1][PLAYER_COL])
+ 415   2                {
+ 416   3                  case BOX:
+ 417   3                    if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]==PLAYER+DES)
+ 418   3                    {
+ 419   4                      if(MAP[LEVEL_CNT][PLAYER_ROW+2][PLAYER_COL]==BLANK)
+ 420   4                      {
+ 421   5                        MAP[LEVEL_CNT][PLAYER_ROW+2][PLAYER_COL]=BOX;
+ 422   5                        MAP[LEVEL_CNT][PLAYER_ROW+1][PLAYER_COL]=PLAYER;
+ 423   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=DES;
+ 424   5                      }
+ 425   4                      else if(MAP[LEVEL_CNT][PLAYER_ROW+2][PLAYER_COL]==DES)
+ 426   4                      {
+C51 COMPILER V9.56.0.0   MAIN                                                              02/05/2023 09:30:57 PAGE 8   
+
+ 427   5                        MAP[LEVEL_CNT][PLAYER_ROW+2][PLAYER_COL]=BOX;
+ 428   5                        MAP[LEVEL_CNT][PLAYER_ROW+1][PLAYER_COL]=PLAYER;
+ 429   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=DES;
+ 430   5                      }
+ 431   4                      else
+ 432   4                      {
+ 433   5                      
+ 434   5                      }
+ 435   4                    }
+ 436   3                    
+ 437   3                    else
+ 438   3                    {
+ 439   4                      if(MAP[LEVEL_CNT][PLAYER_ROW+2][PLAYER_COL]==BLANK)
+ 440   4                      {
+ 441   5                        MAP[LEVEL_CNT][PLAYER_ROW+2][PLAYER_COL]=BOX;
+ 442   5                        MAP[LEVEL_CNT][PLAYER_ROW+1][PLAYER_COL]=PLAYER;
+ 443   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=BLANK;
+ 444   5                      }
+ 445   4                      else if(MAP[LEVEL_CNT][PLAYER_ROW+2][PLAYER_COL]==DES)
+ 446   4                      {
+ 447   5                        MAP[LEVEL_CNT][PLAYER_ROW+2][PLAYER_COL]=BOX;
+ 448   5                        MAP[LEVEL_CNT][PLAYER_ROW+1][PLAYER_COL]=PLAYER;
+ 449   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=BLANK;
+ 450   5                      }
+ 451   4                      else
+ 452   4                      {
+ 453   5                      
+ 454   5                      }
+ 455   4                    }
+ 456   3                  break;
+ 457   3                  
+ 458   3                  case WALL:
+ 459   3                    
+ 460   3                  break;
+ 461   3                  
+ 462   3                  case BLANK:
+ 463   3                    if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]==PLAYER+DES)
+ 464   3                    {
+ 465   4                      MAP[LEVEL_CNT][PLAYER_ROW+1][PLAYER_COL]=PLAYER;
+ 466   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=DES;
+ 467   4                    }
+ 468   3                    else
+ 469   3                    {
+ 470   4                      MAP[LEVEL_CNT][PLAYER_ROW+1][PLAYER_COL]=PLAYER;
+ 471   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=BLANK;
+ 472   4                    }
+ 473   3                  
+ 474   3                  break;
+ 475   3                  
+ 476   3                  case DES:
+ 477   3                    if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]==PLAYER+DES)
+ 478   3                    {
+ 479   4                      MAP[LEVEL_CNT][PLAYER_ROW+1][PLAYER_COL]=PLAYER+DES;
+ 480   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=DES;
+ 481   4                    }
+ 482   3                    else
+ 483   3                    {
+ 484   4                      MAP[LEVEL_CNT][PLAYER_ROW+1][PLAYER_COL]=PLAYER+DES;
+ 485   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=BLANK;
+ 486   4                    }
+ 487   3                  
+ 488   3                  break;
+C51 COMPILER V9.56.0.0   MAIN                                                              02/05/2023 09:30:57 PAGE 9   
+
+ 489   3                }
+ 490   2                break;
+ 491   2              case MOVE_LEFT:
+ 492   2                switch(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-1])
+ 493   2                {
+ 494   3                  case BOX:
+ 495   3                    if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]==PLAYER+DES)
+ 496   3                    {
+ 497   4                      if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-2]==BLANK)
+ 498   4                      {
+ 499   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-2]=BOX;
+ 500   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-1]=PLAYER;
+ 501   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=DES;
+ 502   5                      }
+ 503   4                      else if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-2]==DES)
+ 504   4                      {
+ 505   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-2]=BOX;
+ 506   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-1]=PLAYER;
+ 507   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=DES;
+ 508   5                      }
+ 509   4                      else
+ 510   4                      {
+ 511   5                      
+ 512   5                      }
+ 513   4                    }
+ 514   3                    
+ 515   3                    else
+ 516   3                    {
+ 517   4                      if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-2]==BLANK)
+ 518   4                      {
+ 519   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-2]=BOX;
+ 520   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-1]=PLAYER;
+ 521   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=BLANK;
+ 522   5                      }
+ 523   4                      else if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-2]==DES)
+ 524   4                      {
+ 525   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-2]=BOX;
+ 526   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-1]=PLAYER;
+ 527   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=BLANK;
+ 528   5                      }
+ 529   4                      else
+ 530   4                      {
+ 531   5                      
+ 532   5                      }
+ 533   4                    }
+ 534   3                  break;
+ 535   3                  
+ 536   3                  case WALL:
+ 537   3                    
+ 538   3                  break;
+ 539   3                  
+ 540   3                  case BLANK:
+ 541   3                    if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]==PLAYER+DES)
+ 542   3                    {
+ 543   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-1]=PLAYER;
+ 544   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=DES;
+ 545   4                    }
+ 546   3                    else
+ 547   3                    {
+ 548   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-1]=PLAYER;
+ 549   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=BLANK;
+ 550   4                    }
+C51 COMPILER V9.56.0.0   MAIN                                                              02/05/2023 09:30:57 PAGE 10  
+
+ 551   3                  
+ 552   3                  break;
+ 553   3                  
+ 554   3                  case DES:
+ 555   3                    if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]==PLAYER+DES)
+ 556   3                    {
+ 557   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-1]=PLAYER+DES;
+ 558   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=DES;
+ 559   4                    }
+ 560   3                    else
+ 561   3                    {
+ 562   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-1]=PLAYER+DES;
+ 563   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=BLANK;
+ 564   4                    }
+ 565   3                  
+ 566   3                  break;
+ 567   3                }
+ 568   2                break;
+ 569   2              case MOVE_RIGHT:
+ 570   2                switch(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+1])
+ 571   2                {
+ 572   3                  case BOX:
+ 573   3                    if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]==PLAYER+DES)
+ 574   3                    {
+ 575   4                      if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+2]==BLANK)
+ 576   4                      {
+ 577   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+2]=BOX;
+ 578   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+1]=PLAYER;
+ 579   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=DES;
+ 580   5                      }
+ 581   4                      else if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+2]==DES)
+ 582   4                      {
+ 583   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+2]=BOX;
+ 584   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+1]=PLAYER;
+ 585   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=DES;
+ 586   5                      }
+ 587   4                      else
+ 588   4                      {
+ 589   5                      
+ 590   5                      }
+ 591   4                    }
+ 592   3                    
+ 593   3                    else
+ 594   3                    {
+ 595   4                      if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+2]==BLANK)
+ 596   4                      {
+ 597   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+2]=BOX;
+ 598   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+1]=PLAYER;
+ 599   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=BLANK;
+ 600   5                      }
+ 601   4                      else if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+2]==DES)
+ 602   4                      {
+ 603   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+2]=BOX;
+ 604   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+1]=PLAYER;
+ 605   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=BLANK;
+ 606   5                      }
+ 607   4                      else
+ 608   4                      {
+ 609   5                      
+ 610   5                      }
+ 611   4                    }
+ 612   3                  break;
+C51 COMPILER V9.56.0.0   MAIN                                                              02/05/2023 09:30:57 PAGE 11  
+
+ 613   3                  
+ 614   3                  case WALL:
+ 615   3                    
+ 616   3                  break;
+ 617   3                  
+ 618   3                  case BLANK:
+ 619   3                    if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]==PLAYER+DES)
+ 620   3                    {
+ 621   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+1]=PLAYER;
+ 622   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=DES;
+ 623   4                    }
+ 624   3                    else
+ 625   3                    {
+ 626   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+1]=PLAYER;
+ 627   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=BLANK;
+ 628   4                    }
+ 629   3                  
+ 630   3                  break;
+ 631   3                  
+ 632   3                  case DES:
+ 633   3                    if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]==PLAYER+DES)
+ 634   3                    {
+ 635   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+1]=PLAYER+DES;
+ 636   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=DES;
+ 637   4                    }
+ 638   3                    else
+ 639   3                    {
+ 640   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+1]=PLAYER+DES;
+ 641   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=BLANK;
+ 642   4                    }
+ 643   3                  
+ 644   3                  break;
+ 645   3                }
+ 646   2                break;
+ 647   2              
+ 648   2        }
+ 649   1          
+ 650   1      }
+ 651          
+ 652          void timer0 (void) interrupt 1
+ 653          {
+ 654   1        Tcount++;  //50ms中断次数计数器加一 ，如果等于20,1s到，主程序中查询此变量计时，并清零。
+ 655   1      }
+ 656          
+ 657              
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   1917    ----
+   CONSTANT SIZE    =   1526    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     79       8
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

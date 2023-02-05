@@ -3,7 +3,6 @@
 ".\Objects\GPIO.obj",
 ".\Objects\KeyScan.obj",
 ".\Objects\Serial2.obj",
-".\Objects\LCD12864.obj",
-".\Objects\Segment.obj" 
+".\Objects\LCD12864.obj" 
 TO ".\Objects\zongheshiyan" 
 PRINT(".\Listings\zongheshiyan.m51") RAMSIZE(256) 

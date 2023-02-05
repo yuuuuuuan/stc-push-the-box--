@@ -393,11 +393,6 @@
               <FileType>1</FileType>
               <FilePath>.\Code\LCD12864.c</FilePath>
             </File>
-            <File>
-              <FileName>Segment.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Code\Segment.c</FilePath>
-            </File>
           </Files>
         </Group>
       </Groups>

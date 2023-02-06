@@ -11,6 +11,9 @@
 #define PLAYER 2
 #define BOX 3
 #define DES 4
+#define PLAYER_DES 6
+#define BOX_DES 7
+
 #define LEVEL 1
 #define ROW 8
 #define COL 8
@@ -366,21 +369,21 @@ void game_draw(void)
 	{	
 		for(k=0;k<COL;k++)
 		{
-			if(MAP[LEVEL_CNT][j][k]==PLAYER||MAP[0][j][k]==PLAYER+DES)
+			if(MAP[LEVEL_CNT][j][k]==PLAYER||MAP[LEVEL_CNT][j][k]==(PLAYER_DES))
 			{
 				PLAYER_ROW=j;
 				PLAYER_COL=k;
 			}
 			
-			if(MAP[LEVEL_CNT][j][k]==DES+BOX)
-			{
-				DESBOX++;
-				if(DES_CNT[LEVEL_CNT]==DESBOX)
-				{
-					DESBOX = 0;
-					LEVEL_CNT++;
-				}
-			}
+			//if(MAP[LEVEL_CNT][j][k]==(BOX_DES))
+			//{
+			//	DESBOX++;
+			//	if(DES_CNT[LEVEL_CNT]==DESBOX)
+			//	{
+			//		DESBOX = 0;
+			//		LEVEL_CNT++;
+			//	}
+			//}
 			switch(MAP[LEVEL_CNT][j][k])
 			{
 				case BLANK:
@@ -398,10 +401,10 @@ void game_draw(void)
 				case DES:
 					Displaycube (j,k,Img_DES);
 					break;
-				case PLAYER+DES:
+				case PLAYER_DES:
 					Displaycube (j,k,Img_DP);
 					break;
-				case BOX+DES:
+				case BOX_DES:
 					Displaycube (j,k,Img_DB);
 					break;
 			}
@@ -421,7 +424,7 @@ void game_move(void)
 					switch(MAP[LEVEL_CNT][PLAYER_ROW-1][PLAYER_COL])
 					{
 						case BOX:
-							if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]==PLAYER+DES)
+							if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]==PLAYER_DES)
 							{
 								if(MAP[LEVEL_CNT][PLAYER_ROW-2][PLAYER_COL]==BLANK)
 								{
@@ -431,7 +434,7 @@ void game_move(void)
 								}
 								else if(MAP[LEVEL_CNT][PLAYER_ROW-2][PLAYER_COL]==DES)
 								{
-									MAP[LEVEL_CNT][PLAYER_ROW-2][PLAYER_COL]=BOX+DES;
+									MAP[LEVEL_CNT][PLAYER_ROW-2][PLAYER_COL]=BOX_DES;
 									MAP[LEVEL_CNT][PLAYER_ROW-1][PLAYER_COL]=PLAYER;
 									MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=DES;
 								}
@@ -451,7 +454,7 @@ void game_move(void)
 								}
 								else if(MAP[LEVEL_CNT][PLAYER_ROW-2][PLAYER_COL]==DES)
 								{
-									MAP[LEVEL_CNT][PLAYER_ROW-2][PLAYER_COL]=BOX+DES;
+									MAP[LEVEL_CNT][PLAYER_ROW-2][PLAYER_COL]=BOX_DES;
 									MAP[LEVEL_CNT][PLAYER_ROW-1][PLAYER_COL]=PLAYER;
 									MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=BLANK;
 								}
@@ -467,7 +470,7 @@ void game_move(void)
 						break;
 						
 						case BLANK:
-							if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]==PLAYER+DES)
+							if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]==PLAYER_DES)
 							{
 								MAP[LEVEL_CNT][PLAYER_ROW-1][PLAYER_COL]=PLAYER;
 								MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=DES;
@@ -481,14 +484,14 @@ void game_move(void)
 						break;
 						
 						case DES:
-							if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]==PLAYER+DES)
+							if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]==PLAYER_DES)
 							{
-								MAP[LEVEL_CNT][PLAYER_ROW-1][PLAYER_COL]=PLAYER+DES;
+								MAP[LEVEL_CNT][PLAYER_ROW-1][PLAYER_COL]=PLAYER_DES;
 								MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=DES;
 							}
 							else
 							{
-								MAP[LEVEL_CNT][PLAYER_ROW-1][PLAYER_COL]=PLAYER+DES;
+								MAP[LEVEL_CNT][PLAYER_ROW-1][PLAYER_COL]=PLAYER_DES;
 								MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=BLANK;
 							}
 						
@@ -499,7 +502,7 @@ void game_move(void)
 					switch(MAP[LEVEL_CNT][PLAYER_ROW+1][PLAYER_COL])
 					{
 						case BOX:
-							if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]==PLAYER+DES)
+							if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]==PLAYER_DES)
 							{
 								if(MAP[LEVEL_CNT][PLAYER_ROW+2][PLAYER_COL]==BLANK)
 								{
@@ -509,7 +512,7 @@ void game_move(void)
 								}
 								else if(MAP[LEVEL_CNT][PLAYER_ROW+2][PLAYER_COL]==DES)
 								{
-									MAP[LEVEL_CNT][PLAYER_ROW+2][PLAYER_COL]=BOX;
+									MAP[LEVEL_CNT][PLAYER_ROW+2][PLAYER_COL]=BOX_DES;
 									MAP[LEVEL_CNT][PLAYER_ROW+1][PLAYER_COL]=PLAYER;
 									MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=DES;
 								}
@@ -529,7 +532,7 @@ void game_move(void)
 								}
 								else if(MAP[LEVEL_CNT][PLAYER_ROW+2][PLAYER_COL]==DES)
 								{
-									MAP[LEVEL_CNT][PLAYER_ROW+2][PLAYER_COL]=BOX;
+									MAP[LEVEL_CNT][PLAYER_ROW+2][PLAYER_COL]=BOX_DES;
 									MAP[LEVEL_CNT][PLAYER_ROW+1][PLAYER_COL]=PLAYER;
 									MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=BLANK;
 								}
@@ -545,7 +548,7 @@ void game_move(void)
 						break;
 						
 						case BLANK:
-							if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]==PLAYER+DES)
+							if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]==PLAYER_DES)
 							{
 								MAP[LEVEL_CNT][PLAYER_ROW+1][PLAYER_COL]=PLAYER;
 								MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=DES;
@@ -559,14 +562,14 @@ void game_move(void)
 						break;
 						
 						case DES:
-							if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]==PLAYER+DES)
+							if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]==PLAYER_DES)
 							{
-								MAP[LEVEL_CNT][PLAYER_ROW+1][PLAYER_COL]=PLAYER+DES;
+								MAP[LEVEL_CNT][PLAYER_ROW+1][PLAYER_COL]=PLAYER_DES;
 								MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=DES;
 							}
 							else
 							{
-								MAP[LEVEL_CNT][PLAYER_ROW+1][PLAYER_COL]=PLAYER+DES;
+								MAP[LEVEL_CNT][PLAYER_ROW+1][PLAYER_COL]=PLAYER_DES;
 								MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=BLANK;
 							}
 						
@@ -577,7 +580,7 @@ void game_move(void)
 					switch(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-1])
 					{
 						case BOX:
-							if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]==PLAYER+DES)
+							if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]==PLAYER_DES)
 							{
 								if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-2]==BLANK)
 								{
@@ -587,7 +590,7 @@ void game_move(void)
 								}
 								else if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-2]==DES)
 								{
-									MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-2]=BOX;
+									MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-2]=BOX_DES;
 									MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-1]=PLAYER;
 									MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=DES;
 								}
@@ -607,7 +610,7 @@ void game_move(void)
 								}
 								else if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-2]==DES)
 								{
-									MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-2]=BOX;
+									MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-2]=BOX_DES;
 									MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-1]=PLAYER;
 									MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=BLANK;
 								}
@@ -623,7 +626,7 @@ void game_move(void)
 						break;
 						
 						case BLANK:
-							if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]==PLAYER+DES)
+							if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]==PLAYER_DES)
 							{
 								MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-1]=PLAYER;
 								MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=DES;
@@ -637,14 +640,14 @@ void game_move(void)
 						break;
 						
 						case DES:
-							if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]==PLAYER+DES)
+							if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]==PLAYER_DES)
 							{
-								MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-1]=PLAYER+DES;
+								MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-1]=PLAYER_DES;
 								MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=DES;
 							}
 							else
 							{
-								MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-1]=PLAYER+DES;
+								MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-1]=PLAYER_DES;
 								MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=BLANK;
 							}
 						
@@ -655,7 +658,7 @@ void game_move(void)
 					switch(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+1])
 					{
 						case BOX:
-							if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]==PLAYER+DES)
+							if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]==PLAYER_DES)
 							{
 								if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+2]==BLANK)
 								{
@@ -665,7 +668,7 @@ void game_move(void)
 								}
 								else if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+2]==DES)
 								{
-									MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+2]=BOX;
+									MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+2]=BOX_DES;
 									MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+1]=PLAYER;
 									MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=DES;
 								}
@@ -685,7 +688,7 @@ void game_move(void)
 								}
 								else if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+2]==DES)
 								{
-									MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+2]=BOX;
+									MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+2]=BOX_DES;
 									MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+1]=PLAYER;
 									MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=BLANK;
 								}
@@ -701,7 +704,7 @@ void game_move(void)
 						break;
 						
 						case BLANK:
-							if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]==PLAYER+DES)
+							if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]==PLAYER_DES)
 							{
 								MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+1]=PLAYER;
 								MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=DES;
@@ -715,14 +718,14 @@ void game_move(void)
 						break;
 						
 						case DES:
-							if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]==PLAYER+DES)
+							if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]==PLAYER_DES)
 							{
-								MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+1]=PLAYER+DES;
+								MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+1]=PLAYER_DES;
 								MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=DES;
 							}
 							else
 							{
-								MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+1]=PLAYER+DES;
+								MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+1]=PLAYER_DES;
 								MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=BLANK;
 							}
 						

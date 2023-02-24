@@ -12,6 +12,7 @@ extern void    LCDClear(void);
 extern void    LCDFlash(void);
 extern void    DisplayOneChar(u8 X, u8 Y, u8 DData);
 extern void    DisplayListChar(u8 X, u8 Y, u8 code *DData);
+extern void		 DisplayListNum(u8 X, u8 Y, u8 DData);
 extern void    DisplayImage (u8 code *DData);
 extern void		 DisplayClear (void);
 #endif

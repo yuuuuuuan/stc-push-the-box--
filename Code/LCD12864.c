@@ -127,6 +127,7 @@ void    LCDClear(void);
 void    LCDFlash(void);
 void    DisplayOneChar(u8 X, u8 Y, u8 DData);
 void    DisplayListChar(u8 X, u8 Y, u8 code *DData);
+void 		DisplayListNum(u8 X, u8 Y, u8 DData);
 void    DisplayImage (u8 code *DData);
 
 
@@ -280,7 +281,26 @@ void DisplayListChar(u8 X, u8 Y, u8 code *DData)
         }
     }
 }
+void DisplayListNum(u8 X, u8 Y, u8 DData)
+{
+	  u8 ListLength,X2;
+    ListLength = 0;
+    X2 = X;
+    if(Y < 1)   Y=1;
+    if(Y > 4)   Y=4;
+    X &= 0x0F; //限制X不能大于16，Y在1-4之内
+    switch(Y)
+    {
+        case 1: X2 |= 0X80; break;  //根据行数来选择相应地址
+        case 2: X2 |= 0X90; break;
+        case 3: X2 |= 0X88; break;
+        case 4: X2 |= 0X98; break;
+    }
+    WriteCommandLCD(X2, 1); //发送地址码
+    WriteDataLCD(0x30+DData); //
+            
 
+}
 //图形显示122*32
 void DisplayImage (u8 code *DData)
 {

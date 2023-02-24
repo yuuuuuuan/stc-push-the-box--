@@ -30,6 +30,12 @@ void Displaycube (u8 r,u8 c,u8 code *DData);
 void		 DisplayClear (void);
 u8 button = 0X55;
 u8  Tcount=0;
+u8  second=0;
+u8  minute=0;
+u8  second_10=0;
+u8  second_01=0;
+u8  minute_10=0;
+u8  minute_01=0;
 u8 PLAYER_ROW;
 u8 PLAYER_COL;
 u8 cookie[]={
@@ -255,17 +261,14 @@ void main(void)
 	  TL0=0xB0;
 	  ET0=1;     //开启定时器T0中断
 	  TR0=1;     //启动定时器，开始计时
-		
-	    
-			
-	
 		DisableHC595();     //禁止掉学习板上的HC595显示，省电
-
     delay_ms(100); //启动等待，等LCD讲入工作状态
     LCDInit(); //LCM初始化
     delay_ms(5); //延时片刻(可不要)
 	  LCDClear();
 		DisplayClear ();
+		
+		//开机显示动画
 	
 		welcome_frame();
 		DisplayListChar(0,1,open_line1);
@@ -275,17 +278,21 @@ void main(void)
 		DisplayListChar(0,4,open_line4);
 		delay_ms(5000);
 		LCDClear();
-		DisplayClear ();
-		
+		DisplayClear();
 		game_frame();
 		DisplayListChar(5,1,game_line1);
-		DisplayListChar(5,2,game_line2);
 		DisplayListChar(5,3,game_line3);
-		DisplayListChar(5,4,game_line4);
+		
+		
+		//进入游戏画面
 		
 		while(1)
 		{
+			DisplayListNum(5,2,minute);
 			
+			DisplayListNum(6,2,second);
+			
+			DisplayListNum(6,4,LEVEL_CNT);
 			button=KeyScan();
 			delay_ms(5);
 			if(button==0x55)
@@ -308,6 +315,8 @@ void welcome_frame(void)
 {
 	DisplayImage (frame_img_welcome);
 }
+
+//显示8*8像素的方块
 
 void Displaycube (u8 r,u8 c,u8 code *DData)
 
@@ -362,6 +371,8 @@ void Displaycube (u8 r,u8 c,u8 code *DData)
     WriteCommandLCD(0x30,1);
 }
 
+
+
 void game_draw(void)
 {
 	u8 j=0,k=0;
@@ -375,15 +386,15 @@ void game_draw(void)
 				PLAYER_COL=k;
 			}
 			
-			//if(MAP[LEVEL_CNT][j][k]==(BOX_DES))
-			//{
-			//	DESBOX++;
-			//	if(DES_CNT[LEVEL_CNT]==DESBOX)
-			//	{
-			//		DESBOX = 0;
-			//		LEVEL_CNT++;
-			//	}
-			//}
+			if(MAP[LEVEL_CNT][j][k]==(BOX_DES))
+			{
+				DESBOX++;
+				if(DES_CNT[LEVEL_CNT]==DESBOX)
+				{
+					DESBOX = 0;
+					LEVEL_CNT++;
+				}
+			}
 			switch(MAP[LEVEL_CNT][j][k])
 			{
 				case BLANK:
@@ -413,7 +424,7 @@ void game_draw(void)
 	}
 }
 
-
+//游戏移动
 
 void game_move(void)
 {
@@ -734,12 +745,22 @@ void game_move(void)
 					break;
 				
 	}
-		
+	
 }
 
 void timer0 (void) interrupt 1
 {
   Tcount++;  //50ms中断次数计数器加一 ，如果等于20,1s到，主程序中查询此变量计时，并清零。
+	if(Tcount==19)
+	{
+		Tcount=0;
+		second++;
+		if(second==59)
+		{
+			second=0;
+			minute++;
+		}
+	}
 }
 
 		

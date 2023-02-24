@@ -1,4 +1,4 @@
-C51 COMPILER V9.56.0.0   MAIN                                                              02/06/2023 10:10:14 PAGE 1   
+C51 COMPILER V9.56.0.0   MAIN                                                              02/24/2023 09:12:04 PAGE 1   
 
 
 C51 COMPILER V9.56.0.0, COMPILATION OF MODULE MAIN
@@ -40,93 +40,93 @@ line level    source
   30          void     DisplayClear (void);
   31          u8 button = 0X55;
   32          u8  Tcount=0;
-  33          u8 PLAYER_ROW;
-  34          u8 PLAYER_COL;
-  35          u8 cookie[]={
-  36            0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
-  37          };
-  38          u8 MAP[LEVEL][ROW][COL] = 
-  39          {
-  40            {
-  41              {0,0,0,1,1,1,0,0},
-  42              {0,0,0,1,4,1,0,0},
-  43              {0,0,0,1,0,1,0,0},
-  44              {1,1,1,1,3,1,1,1},
-  45              {1,4,0,3,2,3,4,1},
-  46              {1,1,1,1,3,1,1,1},
-  47              {0,0,0,1,4,1,0,0},
-  48              {0,0,0,1,1,1,0,0}
-  49            }
-  50          };
-  51          
-  52          code u8 Img_DB[64] = 
-  53          {
-  54            0xFF,0xC3,0xA5,0x99,0x99,0xA5,0xC3,0xFF
-C51 COMPILER V9.56.0.0   MAIN                                                              02/06/2023 10:10:14 PAGE 2   
+  33          u8  second=0;
+  34          u8  minute=0;
+  35          u8  second_10=0;
+  36          u8  second_01=0;
+  37          u8  minute_10=0;
+  38          u8  minute_01=0;
+  39          u8 PLAYER_ROW;
+  40          u8 PLAYER_COL;
+  41          u8 cookie[]={
+  42            0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+  43          };
+  44          u8 MAP[LEVEL][ROW][COL] = 
+  45          {
+  46            {
+  47              {0,0,0,1,1,1,0,0},
+  48              {0,0,0,1,4,1,0,0},
+  49              {0,0,0,1,0,1,0,0},
+  50              {1,1,1,1,3,1,1,1},
+  51              {1,4,0,3,2,3,4,1},
+  52              {1,1,1,1,3,1,1,1},
+  53              {0,0,0,1,4,1,0,0},
+  54              {0,0,0,1,1,1,0,0}
+C51 COMPILER V9.56.0.0   MAIN                                                              02/24/2023 09:12:04 PAGE 2   
 
-  55          };
-  56          
+  55            }
+  56          };
   57          
-  58          code u8 Img_DP[64] = 
+  58          code u8 Img_DB[64] = 
   59          {
-  60            0x18,0x3C,0x7E,0x5A,0x5A,0x5A,0x3C,0x24
+  60            0xFF,0xC3,0xA5,0x99,0x99,0xA5,0xC3,0xFF
   61          };
   62          
-  63          code u8 Img_DES[64] = 
-  64          {
-  65            0x00,0x18,0x24,0x42,0x42,0x24,0x18,0x00
-  66          };
-  67          
-  68          code u8 Img_BLANK[64] = 
-  69          {
-  70            0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
-  71          };
-  72          
-  73          code u8 Img_BOX[64] = 
-  74          {
-  75            0xFF,0x81,0xFF,0x81,0x81,0xFF,0x81,0xFF
-  76          };
-  77          
-  78          code u8 Img_PLAYER[64] = 
-  79          {
-  80            0x18,0x18,0x7E,0x5A,0x5A,0x18,0x24,0x24
-  81          };
-  82          
-  83          code u8 Img_WALL[64] = 
-  84          {
-  85            0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff
-  86          };
-  87          
+  63          
+  64          code u8 Img_DP[64] = 
+  65          {
+  66            0x18,0x3C,0x7E,0x5A,0x5A,0x5A,0x3C,0x24
+  67          };
+  68          
+  69          code u8 Img_DES[64] = 
+  70          {
+  71            0x00,0x18,0x24,0x42,0x42,0x24,0x18,0x00
+  72          };
+  73          
+  74          code u8 Img_BLANK[64] = 
+  75          {
+  76            0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+  77          };
+  78          
+  79          code u8 Img_BOX[64] = 
+  80          {
+  81            0xFF,0x81,0xFF,0x81,0x81,0xFF,0x81,0xFF
+  82          };
+  83          
+  84          code u8 Img_PLAYER[64] = 
+  85          {
+  86            0x18,0x18,0x7E,0x5A,0x5A,0x18,0x24,0x24
+  87          };
   88          
-  89          
-  90          u8 DES_CNT[LEVEL] = {4};
-  91          u8 DESBOX = 0;
-  92          u8 LEVEL_CNT = 0;
+  89          code u8 Img_WALL[64] = 
+  90          {
+  91            0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff
+  92          };
   93          
-  94          u8  code open_line1[] = {" GAME"};
-  95          u8  code open_line2[] = {" Push the Boxes"};
-  96          u8  code open_line3[] = {" ENTER   QUIT "};
-  97          u8  code open_line4[] = {" MadeByYuuuan"};
-  98          
-  99          u8  code game_line1[] = {"TIME"};
- 100          u8  code game_line2[] = {""};
- 101          u8  code game_line3[] = {"LEVEL"};
- 102          u8  code game_line4[] = {""};
- 103          
- 104          code u8 frame_img_welcome[1024] = {
- 105          
- 106          0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,
- 107          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
- 108          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
- 109          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
- 110          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
- 111          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
- 112          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+  94          
+  95          
+  96          u8 DES_CNT[LEVEL] = {4};
+  97          u8 DESBOX = 0;
+  98          u8 LEVEL_CNT = 0;
+  99          
+ 100          u8  code open_line1[] = {" GAME"};
+ 101          u8  code open_line2[] = {" Push the Boxes"};
+ 102          u8  code open_line3[] = {" ENTER   QUIT "};
+ 103          u8  code open_line4[] = {" MadeByYuuuan"};
+ 104          
+ 105          u8  code game_line1[] = {"TIME"};
+ 106          u8  code game_line2[] = {""};
+ 107          u8  code game_line3[] = {"LEVEL"};
+ 108          u8  code game_line4[] = {""};
+ 109          
+ 110          code u8 frame_img_welcome[1024] = {
+ 111          
+ 112          0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,
  113          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
  114          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
  115          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
  116          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
-C51 COMPILER V9.56.0.0   MAIN                                                              02/06/2023 10:10:14 PAGE 3   
+C51 COMPILER V9.56.0.0   MAIN                                                              02/24/2023 09:12:04 PAGE 3   
 
  117          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
  118          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
@@ -180,23 +180,23 @@ line level    source
  166          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
  167          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
  168          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
- 169          0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,
- 170          
- 171              
- 172          };
- 173          
- 174          
- 175          code u8 frame_img_game[1024] = {
+ 169          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 170          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 171          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 172          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 173          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 174          0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 175          0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,
  176          
- 177            0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,
- 178            0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
-C51 COMPILER V9.56.0.0   MAIN                                                              02/06/2023 10:10:14 PAGE 4   
+ 177              
+ 178          };
+C51 COMPILER V9.56.0.0   MAIN                                                              02/24/2023 09:12:04 PAGE 4   
 
- 179            0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
- 180            0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
- 181            0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
- 182            0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
- 183            0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 179          
+ 180          
+ 181          code u8 frame_img_game[1024] = {
+ 182          
+ 183            0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,
  184            0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
  185            0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
  186            0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
@@ -253,538 +253,559 @@ line level    source
  237            0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
  238            0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
  239            0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
- 240            0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,
-C51 COMPILER V9.56.0.0   MAIN                                                              02/06/2023 10:10:14 PAGE 5   
+ 240            0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+C51 COMPILER V9.56.0.0   MAIN                                                              02/24/2023 09:12:04 PAGE 5   
 
- 241          
- 242              
- 243          };
- 244          
- 245          
- 246          
+ 241            0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 242            0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 243            0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 244            0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 245            0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X01,
+ 246            0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,
  247          
- 248          
- 249          void main(void)
- 250          {
- 251   1          
- 252   1          GPIO();
- 253   1          TMOD=0x00; //T0 T1方式0：16位自动重装定时器模式，使用12分频系统时钟   
- 254   1          TH0=0x3C;  //@12MHZ 定时50ms，中断20次为1s
- 255   1          TL0=0xB0;
- 256   1          ET0=1;     //开启定时器T0中断
- 257   1          TR0=1;     //启动定时器，开始计时
- 258   1          
- 259   1            
- 260   1            
- 261   1        
- 262   1          DisableHC595();     //禁止掉学习板上的HC595显示，省电
- 263   1      
- 264   1          delay_ms(100); //启动等待，等LCD讲入工作状态
- 265   1          LCDInit(); //LCM初始化
- 266   1          delay_ms(5); //延时片刻(可不要)
- 267   1          LCDClear();
- 268   1          DisplayClear ();
- 269   1        
- 270   1          welcome_frame();
- 271   1          DisplayListChar(0,1,open_line1);
- 272   1          DisplayListChar(0,2,open_line2);
- 273   1          DisplayListChar(0,3,open_line3);
- 274   1          DisplayListChar(0,4,open_line4);
- 275   1          DisplayListChar(0,4,open_line4);
- 276   1          delay_ms(5000);
- 277   1          LCDClear();
- 278   1          DisplayClear ();
- 279   1          
- 280   1          game_frame();
- 281   1          DisplayListChar(5,1,game_line1);
- 282   1          DisplayListChar(5,2,game_line2);
- 283   1          DisplayListChar(5,3,game_line3);
- 284   1          DisplayListChar(5,4,game_line4);
+ 248              
+ 249          };
+ 250          
+ 251          
+ 252          
+ 253          
+ 254          
+ 255          void main(void)
+ 256          {
+ 257   1          
+ 258   1          GPIO();
+ 259   1          TMOD=0x00; //T0 T1方式0：16位自动重装定时器模式，使用12分频系统时钟   
+ 260   1          TH0=0x3C;  //@12MHZ 定时50ms，中断20次为1s
+ 261   1          TL0=0xB0;
+ 262   1          ET0=1;     //开启定时器T0中断
+ 263   1          TR0=1;     //启动定时器，开始计时
+ 264   1          DisableHC595();     //禁止掉学习板上的HC595显示，省电
+ 265   1          delay_ms(100); //启动等待，等LCD讲入工作状态
+ 266   1          LCDInit(); //LCM初始化
+ 267   1          delay_ms(5); //延时片刻(可不要)
+ 268   1          LCDClear();
+ 269   1          DisplayClear ();
+ 270   1          
+ 271   1          //开机显示动画
+ 272   1        
+ 273   1          welcome_frame();
+ 274   1          DisplayListChar(0,1,open_line1);
+ 275   1          DisplayListChar(0,2,open_line2);
+ 276   1          DisplayListChar(0,3,open_line3);
+ 277   1          DisplayListChar(0,4,open_line4);
+ 278   1          DisplayListChar(0,4,open_line4);
+ 279   1          delay_ms(5000);
+ 280   1          LCDClear();
+ 281   1          DisplayClear();
+ 282   1          game_frame();
+ 283   1          DisplayListChar(5,1,game_line1);
+ 284   1          DisplayListChar(5,3,game_line3);
  285   1          
- 286   1          while(1)
- 287   1          {
- 288   2            
- 289   2            button=KeyScan();
- 290   2            delay_ms(5);
- 291   2            if(button==0x55)
- 292   2            {
- 293   3              button = 0X55;
- 294   3              game_draw();
- 295   3            }
- 296   2            game_move();
- 297   2      
- 298   2          }
- 299   1        
- 300   1      }
- 301          
- 302          void game_frame(void)
-C51 COMPILER V9.56.0.0   MAIN                                                              02/06/2023 10:10:14 PAGE 6   
+ 286   1          
+ 287   1          //进入游戏画面
+ 288   1          
+ 289   1          while(1)
+ 290   1          {
+ 291   2            DisplayListNum(5,2,minute);
+ 292   2            
+ 293   2            DisplayListNum(6,2,second);
+ 294   2            
+ 295   2            DisplayListNum(6,4,LEVEL_CNT);
+ 296   2            button=KeyScan();
+ 297   2            delay_ms(5);
+ 298   2            if(button==0x55)
+ 299   2            {
+ 300   3              button = 0X55;
+ 301   3              game_draw();
+ 302   3            }
+C51 COMPILER V9.56.0.0   MAIN                                                              02/24/2023 09:12:04 PAGE 6   
 
- 303          {
- 304   1        DisplayImage (frame_img_game);
- 305   1      }
- 306          
- 307          void welcome_frame(void)
- 308          {
- 309   1        DisplayImage (frame_img_welcome);
- 310   1      }
- 311          
- 312          void Displaycube (u8 r,u8 c,u8 code *DData)
+ 303   2            game_move();
+ 304   2      
+ 305   2          }
+ 306   1        
+ 307   1      }
+ 308          
+ 309          void game_frame(void)
+ 310          {
+ 311   1        DisplayImage (frame_img_game);
+ 312   1      }
  313          
- 314          {
- 315   1          u8 x,i;
- 316   1          i=c%2;
- 317   1          if(r<4)       
- 318   1          {
- 319   2              for(x=0;x<8;x++)
- 320   2              {
- 321   3                  WriteCommandLCD(0x36,1);
- 322   3                  WriteCommandLCD((0x80+r*8+x),1);
- 323   3                  WriteCommandLCD((0x80+c/2),1);    
- 324   3                  WriteCommandLCD(0x30,1);        
- 325   3                  if(i==0)
- 326   3                  {
- 327   4                    WriteDataLCD(DData[x]);
- 328   4                    cookie[x]=DData[x];
- 329   4                  }
- 330   3                  else
- 331   3                    
- 332   3                  {
- 333   4                    
- 334   4                    WriteDataLCD(cookie[x]);
- 335   4                    WriteDataLCD(DData[x]);
- 336   4                  }
- 337   3              }
- 338   2          }
- 339   1          if(r>=4)      
- 340   1          {
- 341   2              for(x=0;x<8;x++)
- 342   2              {
- 343   3                  WriteCommandLCD(0x36,1);
- 344   3                  WriteCommandLCD((0x80+(r-4)*8+x),1);
- 345   3                  WriteCommandLCD((0x88+c/2),1);    
- 346   3                  WriteCommandLCD(0x30,1);        
- 347   3                  if(i==0)
- 348   3                  {
- 349   4                    WriteDataLCD(DData[x]);
- 350   4                    cookie[x]=DData[x];
- 351   4                  }
- 352   3                  else
- 353   3                    
- 354   3                  {
- 355   4                    
- 356   4                    WriteDataLCD(cookie[x]);
- 357   4                    WriteDataLCD(DData[x]);
- 358   4                  }
- 359   3              }
- 360   2          }
- 361   1          WriteCommandLCD(0x34,1);
- 362   1          WriteCommandLCD(0x30,1);
- 363   1      }
- 364          
-C51 COMPILER V9.56.0.0   MAIN                                                              02/06/2023 10:10:14 PAGE 7   
+ 314          void welcome_frame(void)
+ 315          {
+ 316   1        DisplayImage (frame_img_welcome);
+ 317   1      }
+ 318          
+ 319          //显示8*8像素的方块
+ 320          
+ 321          void Displaycube (u8 r,u8 c,u8 code *DData)
+ 322          
+ 323          {
+ 324   1          u8 x,i;
+ 325   1          i=c%2;
+ 326   1          if(r<4)       
+ 327   1          {
+ 328   2              for(x=0;x<8;x++)
+ 329   2              {
+ 330   3                  WriteCommandLCD(0x36,1);
+ 331   3                  WriteCommandLCD((0x80+r*8+x),1);
+ 332   3                  WriteCommandLCD((0x80+c/2),1);    
+ 333   3                  WriteCommandLCD(0x30,1);        
+ 334   3                  if(i==0)
+ 335   3                  {
+ 336   4                    WriteDataLCD(DData[x]);
+ 337   4                    cookie[x]=DData[x];
+ 338   4                  }
+ 339   3                  else
+ 340   3                    
+ 341   3                  {
+ 342   4                    
+ 343   4                    WriteDataLCD(cookie[x]);
+ 344   4                    WriteDataLCD(DData[x]);
+ 345   4                  }
+ 346   3              }
+ 347   2          }
+ 348   1          if(r>=4)      
+ 349   1          {
+ 350   2              for(x=0;x<8;x++)
+ 351   2              {
+ 352   3                  WriteCommandLCD(0x36,1);
+ 353   3                  WriteCommandLCD((0x80+(r-4)*8+x),1);
+ 354   3                  WriteCommandLCD((0x88+c/2),1);    
+ 355   3                  WriteCommandLCD(0x30,1);        
+ 356   3                  if(i==0)
+ 357   3                  {
+ 358   4                    WriteDataLCD(DData[x]);
+ 359   4                    cookie[x]=DData[x];
+ 360   4                  }
+ 361   3                  else
+ 362   3                    
+ 363   3                  {
+ 364   4                    
+C51 COMPILER V9.56.0.0   MAIN                                                              02/24/2023 09:12:04 PAGE 7   
 
- 365          void game_draw(void)
- 366          {
- 367   1        u8 j=0,k=0;
- 368   1        for(j=0;j<ROW;j++)
- 369   1        { 
- 370   2          for(k=0;k<COL;k++)
- 371   2          {
- 372   3            if(MAP[LEVEL_CNT][j][k]==PLAYER||MAP[LEVEL_CNT][j][k]==(PLAYER_DES))
- 373   3            {
- 374   4              PLAYER_ROW=j;
- 375   4              PLAYER_COL=k;
- 376   4            }
- 377   3            
- 378   3            //if(MAP[LEVEL_CNT][j][k]==(BOX_DES))
- 379   3            //{
- 380   3            //  DESBOX++;
- 381   3            //  if(DES_CNT[LEVEL_CNT]==DESBOX)
- 382   3            //  {
- 383   3            //    DESBOX = 0;
- 384   3            //    LEVEL_CNT++;
- 385   3            //  }
- 386   3            //}
- 387   3            switch(MAP[LEVEL_CNT][j][k])
- 388   3            {
- 389   4              case BLANK:
- 390   4                Displaycube (j,k,Img_BLANK);
- 391   4                break;
- 392   4              case WALL:
- 393   4                Displaycube (j,k,Img_WALL);
- 394   4                break;
- 395   4              case PLAYER:
- 396   4                Displaycube (j,k,Img_PLAYER);
- 397   4                break;
- 398   4              case BOX:
- 399   4                Displaycube (j,k,Img_BOX);
- 400   4                break;
- 401   4              case DES:
- 402   4                Displaycube (j,k,Img_DES);
- 403   4                break;
- 404   4              case PLAYER_DES:
- 405   4                Displaycube (j,k,Img_DP);
- 406   4                break;
- 407   4              case BOX_DES:
- 408   4                Displaycube (j,k,Img_DB);
- 409   4                break;
- 410   4            }
- 411   3      
- 412   3          }
- 413   2        }
- 414   1      }
- 415          
- 416          
- 417          
- 418          void game_move(void)
- 419          {
- 420   1        
- 421   1        switch(button)
- 422   1        {
- 423   2              case MOVE_UP:
- 424   2                switch(MAP[LEVEL_CNT][PLAYER_ROW-1][PLAYER_COL])
- 425   2                {
- 426   3                  case BOX:
-C51 COMPILER V9.56.0.0   MAIN                                                              02/06/2023 10:10:14 PAGE 8   
+ 365   4                    WriteDataLCD(cookie[x]);
+ 366   4                    WriteDataLCD(DData[x]);
+ 367   4                  }
+ 368   3              }
+ 369   2          }
+ 370   1          WriteCommandLCD(0x34,1);
+ 371   1          WriteCommandLCD(0x30,1);
+ 372   1      }
+ 373          
+ 374          
+ 375          
+ 376          void game_draw(void)
+ 377          {
+ 378   1        u8 j=0,k=0;
+ 379   1        for(j=0;j<ROW;j++)
+ 380   1        { 
+ 381   2          for(k=0;k<COL;k++)
+ 382   2          {
+ 383   3            if(MAP[LEVEL_CNT][j][k]==PLAYER||MAP[LEVEL_CNT][j][k]==(PLAYER_DES))
+ 384   3            {
+ 385   4              PLAYER_ROW=j;
+ 386   4              PLAYER_COL=k;
+ 387   4            }
+ 388   3            
+ 389   3            if(MAP[LEVEL_CNT][j][k]==(BOX_DES))
+ 390   3            {
+ 391   4              DESBOX++;
+ 392   4              if(DES_CNT[LEVEL_CNT]==DESBOX)
+ 393   4              {
+ 394   5                DESBOX = 0;
+ 395   5                LEVEL_CNT++;
+ 396   5              }
+ 397   4            }
+ 398   3            switch(MAP[LEVEL_CNT][j][k])
+ 399   3            {
+ 400   4              case BLANK:
+ 401   4                Displaycube (j,k,Img_BLANK);
+ 402   4                break;
+ 403   4              case WALL:
+ 404   4                Displaycube (j,k,Img_WALL);
+ 405   4                break;
+ 406   4              case PLAYER:
+ 407   4                Displaycube (j,k,Img_PLAYER);
+ 408   4                break;
+ 409   4              case BOX:
+ 410   4                Displaycube (j,k,Img_BOX);
+ 411   4                break;
+ 412   4              case DES:
+ 413   4                Displaycube (j,k,Img_DES);
+ 414   4                break;
+ 415   4              case PLAYER_DES:
+ 416   4                Displaycube (j,k,Img_DP);
+ 417   4                break;
+ 418   4              case BOX_DES:
+ 419   4                Displaycube (j,k,Img_DB);
+ 420   4                break;
+ 421   4            }
+ 422   3      
+ 423   3          }
+ 424   2        }
+ 425   1      }
+ 426          
+C51 COMPILER V9.56.0.0   MAIN                                                              02/24/2023 09:12:04 PAGE 8   
 
- 427   3                    if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]==PLAYER_DES)
- 428   3                    {
- 429   4                      if(MAP[LEVEL_CNT][PLAYER_ROW-2][PLAYER_COL]==BLANK)
- 430   4                      {
- 431   5                        MAP[LEVEL_CNT][PLAYER_ROW-2][PLAYER_COL]=BOX;
- 432   5                        MAP[LEVEL_CNT][PLAYER_ROW-1][PLAYER_COL]=PLAYER;
- 433   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=DES;
- 434   5                      }
- 435   4                      else if(MAP[LEVEL_CNT][PLAYER_ROW-2][PLAYER_COL]==DES)
- 436   4                      {
- 437   5                        MAP[LEVEL_CNT][PLAYER_ROW-2][PLAYER_COL]=BOX_DES;
- 438   5                        MAP[LEVEL_CNT][PLAYER_ROW-1][PLAYER_COL]=PLAYER;
- 439   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=DES;
- 440   5                      }
- 441   4                      else
- 442   4                      {
- 443   5                      
- 444   5                      }
- 445   4                    }
- 446   3                    
- 447   3                    else
- 448   3                    {
- 449   4                      if(MAP[LEVEL_CNT][PLAYER_ROW-2][PLAYER_COL]==BLANK)
- 450   4                      {
- 451   5                        MAP[LEVEL_CNT][PLAYER_ROW-2][PLAYER_COL]=BOX;
- 452   5                        MAP[LEVEL_CNT][PLAYER_ROW-1][PLAYER_COL]=PLAYER;
- 453   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=BLANK;
- 454   5                      }
- 455   4                      else if(MAP[LEVEL_CNT][PLAYER_ROW-2][PLAYER_COL]==DES)
- 456   4                      {
- 457   5                        MAP[LEVEL_CNT][PLAYER_ROW-2][PLAYER_COL]=BOX_DES;
- 458   5                        MAP[LEVEL_CNT][PLAYER_ROW-1][PLAYER_COL]=PLAYER;
- 459   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=BLANK;
- 460   5                      }
- 461   4                      else
- 462   4                      {
- 463   5                      
- 464   5                      }
- 465   4                    }
- 466   3                  break;
- 467   3                  
- 468   3                  case WALL:
- 469   3                    
- 470   3                  break;
- 471   3                  
- 472   3                  case BLANK:
- 473   3                    if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]==PLAYER_DES)
- 474   3                    {
- 475   4                      MAP[LEVEL_CNT][PLAYER_ROW-1][PLAYER_COL]=PLAYER;
- 476   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=DES;
- 477   4                    }
- 478   3                    else
- 479   3                    {
- 480   4                      MAP[LEVEL_CNT][PLAYER_ROW-1][PLAYER_COL]=PLAYER;
- 481   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=BLANK;
- 482   4                    }
- 483   3                  
- 484   3                  break;
- 485   3                  
- 486   3                  case DES:
- 487   3                    if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]==PLAYER_DES)
- 488   3                    {
-C51 COMPILER V9.56.0.0   MAIN                                                              02/06/2023 10:10:14 PAGE 9   
+ 427          //游戏移动
+ 428          
+ 429          void game_move(void)
+ 430          {
+ 431   1        
+ 432   1        switch(button)
+ 433   1        {
+ 434   2              case MOVE_UP:
+ 435   2                switch(MAP[LEVEL_CNT][PLAYER_ROW-1][PLAYER_COL])
+ 436   2                {
+ 437   3                  case BOX:
+ 438   3                    if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]==PLAYER_DES)
+ 439   3                    {
+ 440   4                      if(MAP[LEVEL_CNT][PLAYER_ROW-2][PLAYER_COL]==BLANK)
+ 441   4                      {
+ 442   5                        MAP[LEVEL_CNT][PLAYER_ROW-2][PLAYER_COL]=BOX;
+ 443   5                        MAP[LEVEL_CNT][PLAYER_ROW-1][PLAYER_COL]=PLAYER;
+ 444   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=DES;
+ 445   5                      }
+ 446   4                      else if(MAP[LEVEL_CNT][PLAYER_ROW-2][PLAYER_COL]==DES)
+ 447   4                      {
+ 448   5                        MAP[LEVEL_CNT][PLAYER_ROW-2][PLAYER_COL]=BOX_DES;
+ 449   5                        MAP[LEVEL_CNT][PLAYER_ROW-1][PLAYER_COL]=PLAYER;
+ 450   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=DES;
+ 451   5                      }
+ 452   4                      else
+ 453   4                      {
+ 454   5                      
+ 455   5                      }
+ 456   4                    }
+ 457   3                    
+ 458   3                    else
+ 459   3                    {
+ 460   4                      if(MAP[LEVEL_CNT][PLAYER_ROW-2][PLAYER_COL]==BLANK)
+ 461   4                      {
+ 462   5                        MAP[LEVEL_CNT][PLAYER_ROW-2][PLAYER_COL]=BOX;
+ 463   5                        MAP[LEVEL_CNT][PLAYER_ROW-1][PLAYER_COL]=PLAYER;
+ 464   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=BLANK;
+ 465   5                      }
+ 466   4                      else if(MAP[LEVEL_CNT][PLAYER_ROW-2][PLAYER_COL]==DES)
+ 467   4                      {
+ 468   5                        MAP[LEVEL_CNT][PLAYER_ROW-2][PLAYER_COL]=BOX_DES;
+ 469   5                        MAP[LEVEL_CNT][PLAYER_ROW-1][PLAYER_COL]=PLAYER;
+ 470   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=BLANK;
+ 471   5                      }
+ 472   4                      else
+ 473   4                      {
+ 474   5                      
+ 475   5                      }
+ 476   4                    }
+ 477   3                  break;
+ 478   3                  
+ 479   3                  case WALL:
+ 480   3                    
+ 481   3                  break;
+ 482   3                  
+ 483   3                  case BLANK:
+ 484   3                    if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]==PLAYER_DES)
+ 485   3                    {
+ 486   4                      MAP[LEVEL_CNT][PLAYER_ROW-1][PLAYER_COL]=PLAYER;
+ 487   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=DES;
+ 488   4                    }
+C51 COMPILER V9.56.0.0   MAIN                                                              02/24/2023 09:12:04 PAGE 9   
 
- 489   4                      MAP[LEVEL_CNT][PLAYER_ROW-1][PLAYER_COL]=PLAYER_DES;
- 490   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=DES;
- 491   4                    }
- 492   3                    else
- 493   3                    {
- 494   4                      MAP[LEVEL_CNT][PLAYER_ROW-1][PLAYER_COL]=PLAYER_DES;
- 495   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=BLANK;
- 496   4                    }
- 497   3                  
- 498   3                  break;
- 499   3                }
- 500   2                break;
- 501   2              case MOVE_DOWN:
- 502   2                switch(MAP[LEVEL_CNT][PLAYER_ROW+1][PLAYER_COL])
- 503   2                {
- 504   3                  case BOX:
- 505   3                    if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]==PLAYER_DES)
- 506   3                    {
- 507   4                      if(MAP[LEVEL_CNT][PLAYER_ROW+2][PLAYER_COL]==BLANK)
- 508   4                      {
- 509   5                        MAP[LEVEL_CNT][PLAYER_ROW+2][PLAYER_COL]=BOX;
- 510   5                        MAP[LEVEL_CNT][PLAYER_ROW+1][PLAYER_COL]=PLAYER;
- 511   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=DES;
- 512   5                      }
- 513   4                      else if(MAP[LEVEL_CNT][PLAYER_ROW+2][PLAYER_COL]==DES)
- 514   4                      {
- 515   5                        MAP[LEVEL_CNT][PLAYER_ROW+2][PLAYER_COL]=BOX_DES;
- 516   5                        MAP[LEVEL_CNT][PLAYER_ROW+1][PLAYER_COL]=PLAYER;
- 517   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=DES;
- 518   5                      }
- 519   4                      else
- 520   4                      {
- 521   5                      
- 522   5                      }
- 523   4                    }
- 524   3                    
- 525   3                    else
- 526   3                    {
- 527   4                      if(MAP[LEVEL_CNT][PLAYER_ROW+2][PLAYER_COL]==BLANK)
- 528   4                      {
- 529   5                        MAP[LEVEL_CNT][PLAYER_ROW+2][PLAYER_COL]=BOX;
- 530   5                        MAP[LEVEL_CNT][PLAYER_ROW+1][PLAYER_COL]=PLAYER;
- 531   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=BLANK;
- 532   5                      }
- 533   4                      else if(MAP[LEVEL_CNT][PLAYER_ROW+2][PLAYER_COL]==DES)
- 534   4                      {
- 535   5                        MAP[LEVEL_CNT][PLAYER_ROW+2][PLAYER_COL]=BOX_DES;
- 536   5                        MAP[LEVEL_CNT][PLAYER_ROW+1][PLAYER_COL]=PLAYER;
- 537   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=BLANK;
- 538   5                      }
- 539   4                      else
- 540   4                      {
- 541   5                      
- 542   5                      }
- 543   4                    }
- 544   3                  break;
- 545   3                  
- 546   3                  case WALL:
- 547   3                    
- 548   3                  break;
- 549   3                  
- 550   3                  case BLANK:
-C51 COMPILER V9.56.0.0   MAIN                                                              02/06/2023 10:10:14 PAGE 10  
+ 489   3                    else
+ 490   3                    {
+ 491   4                      MAP[LEVEL_CNT][PLAYER_ROW-1][PLAYER_COL]=PLAYER;
+ 492   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=BLANK;
+ 493   4                    }
+ 494   3                  
+ 495   3                  break;
+ 496   3                  
+ 497   3                  case DES:
+ 498   3                    if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]==PLAYER_DES)
+ 499   3                    {
+ 500   4                      MAP[LEVEL_CNT][PLAYER_ROW-1][PLAYER_COL]=PLAYER_DES;
+ 501   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=DES;
+ 502   4                    }
+ 503   3                    else
+ 504   3                    {
+ 505   4                      MAP[LEVEL_CNT][PLAYER_ROW-1][PLAYER_COL]=PLAYER_DES;
+ 506   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=BLANK;
+ 507   4                    }
+ 508   3                  
+ 509   3                  break;
+ 510   3                }
+ 511   2                break;
+ 512   2              case MOVE_DOWN:
+ 513   2                switch(MAP[LEVEL_CNT][PLAYER_ROW+1][PLAYER_COL])
+ 514   2                {
+ 515   3                  case BOX:
+ 516   3                    if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]==PLAYER_DES)
+ 517   3                    {
+ 518   4                      if(MAP[LEVEL_CNT][PLAYER_ROW+2][PLAYER_COL]==BLANK)
+ 519   4                      {
+ 520   5                        MAP[LEVEL_CNT][PLAYER_ROW+2][PLAYER_COL]=BOX;
+ 521   5                        MAP[LEVEL_CNT][PLAYER_ROW+1][PLAYER_COL]=PLAYER;
+ 522   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=DES;
+ 523   5                      }
+ 524   4                      else if(MAP[LEVEL_CNT][PLAYER_ROW+2][PLAYER_COL]==DES)
+ 525   4                      {
+ 526   5                        MAP[LEVEL_CNT][PLAYER_ROW+2][PLAYER_COL]=BOX_DES;
+ 527   5                        MAP[LEVEL_CNT][PLAYER_ROW+1][PLAYER_COL]=PLAYER;
+ 528   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=DES;
+ 529   5                      }
+ 530   4                      else
+ 531   4                      {
+ 532   5                      
+ 533   5                      }
+ 534   4                    }
+ 535   3                    
+ 536   3                    else
+ 537   3                    {
+ 538   4                      if(MAP[LEVEL_CNT][PLAYER_ROW+2][PLAYER_COL]==BLANK)
+ 539   4                      {
+ 540   5                        MAP[LEVEL_CNT][PLAYER_ROW+2][PLAYER_COL]=BOX;
+ 541   5                        MAP[LEVEL_CNT][PLAYER_ROW+1][PLAYER_COL]=PLAYER;
+ 542   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=BLANK;
+ 543   5                      }
+ 544   4                      else if(MAP[LEVEL_CNT][PLAYER_ROW+2][PLAYER_COL]==DES)
+ 545   4                      {
+ 546   5                        MAP[LEVEL_CNT][PLAYER_ROW+2][PLAYER_COL]=BOX_DES;
+ 547   5                        MAP[LEVEL_CNT][PLAYER_ROW+1][PLAYER_COL]=PLAYER;
+ 548   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=BLANK;
+ 549   5                      }
+ 550   4                      else
+C51 COMPILER V9.56.0.0   MAIN                                                              02/24/2023 09:12:04 PAGE 10  
 
- 551   3                    if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]==PLAYER_DES)
- 552   3                    {
- 553   4                      MAP[LEVEL_CNT][PLAYER_ROW+1][PLAYER_COL]=PLAYER;
- 554   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=DES;
- 555   4                    }
- 556   3                    else
- 557   3                    {
- 558   4                      MAP[LEVEL_CNT][PLAYER_ROW+1][PLAYER_COL]=PLAYER;
- 559   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=BLANK;
- 560   4                    }
- 561   3                  
- 562   3                  break;
- 563   3                  
- 564   3                  case DES:
- 565   3                    if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]==PLAYER_DES)
- 566   3                    {
- 567   4                      MAP[LEVEL_CNT][PLAYER_ROW+1][PLAYER_COL]=PLAYER_DES;
- 568   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=DES;
- 569   4                    }
- 570   3                    else
- 571   3                    {
- 572   4                      MAP[LEVEL_CNT][PLAYER_ROW+1][PLAYER_COL]=PLAYER_DES;
- 573   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=BLANK;
- 574   4                    }
- 575   3                  
- 576   3                  break;
- 577   3                }
- 578   2                break;
- 579   2              case MOVE_LEFT:
- 580   2                switch(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-1])
- 581   2                {
- 582   3                  case BOX:
- 583   3                    if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]==PLAYER_DES)
- 584   3                    {
- 585   4                      if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-2]==BLANK)
- 586   4                      {
- 587   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-2]=BOX;
- 588   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-1]=PLAYER;
- 589   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=DES;
- 590   5                      }
- 591   4                      else if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-2]==DES)
- 592   4                      {
- 593   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-2]=BOX_DES;
- 594   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-1]=PLAYER;
- 595   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=DES;
- 596   5                      }
- 597   4                      else
- 598   4                      {
- 599   5                      
- 600   5                      }
- 601   4                    }
- 602   3                    
- 603   3                    else
- 604   3                    {
- 605   4                      if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-2]==BLANK)
- 606   4                      {
- 607   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-2]=BOX;
- 608   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-1]=PLAYER;
- 609   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=BLANK;
- 610   5                      }
- 611   4                      else if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-2]==DES)
- 612   4                      {
-C51 COMPILER V9.56.0.0   MAIN                                                              02/06/2023 10:10:14 PAGE 11  
+ 551   4                      {
+ 552   5                      
+ 553   5                      }
+ 554   4                    }
+ 555   3                  break;
+ 556   3                  
+ 557   3                  case WALL:
+ 558   3                    
+ 559   3                  break;
+ 560   3                  
+ 561   3                  case BLANK:
+ 562   3                    if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]==PLAYER_DES)
+ 563   3                    {
+ 564   4                      MAP[LEVEL_CNT][PLAYER_ROW+1][PLAYER_COL]=PLAYER;
+ 565   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=DES;
+ 566   4                    }
+ 567   3                    else
+ 568   3                    {
+ 569   4                      MAP[LEVEL_CNT][PLAYER_ROW+1][PLAYER_COL]=PLAYER;
+ 570   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=BLANK;
+ 571   4                    }
+ 572   3                  
+ 573   3                  break;
+ 574   3                  
+ 575   3                  case DES:
+ 576   3                    if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]==PLAYER_DES)
+ 577   3                    {
+ 578   4                      MAP[LEVEL_CNT][PLAYER_ROW+1][PLAYER_COL]=PLAYER_DES;
+ 579   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=DES;
+ 580   4                    }
+ 581   3                    else
+ 582   3                    {
+ 583   4                      MAP[LEVEL_CNT][PLAYER_ROW+1][PLAYER_COL]=PLAYER_DES;
+ 584   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=BLANK;
+ 585   4                    }
+ 586   3                  
+ 587   3                  break;
+ 588   3                }
+ 589   2                break;
+ 590   2              case MOVE_LEFT:
+ 591   2                switch(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-1])
+ 592   2                {
+ 593   3                  case BOX:
+ 594   3                    if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]==PLAYER_DES)
+ 595   3                    {
+ 596   4                      if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-2]==BLANK)
+ 597   4                      {
+ 598   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-2]=BOX;
+ 599   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-1]=PLAYER;
+ 600   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=DES;
+ 601   5                      }
+ 602   4                      else if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-2]==DES)
+ 603   4                      {
+ 604   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-2]=BOX_DES;
+ 605   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-1]=PLAYER;
+ 606   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=DES;
+ 607   5                      }
+ 608   4                      else
+ 609   4                      {
+ 610   5                      
+ 611   5                      }
+ 612   4                    }
+C51 COMPILER V9.56.0.0   MAIN                                                              02/24/2023 09:12:04 PAGE 11  
 
- 613   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-2]=BOX_DES;
- 614   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-1]=PLAYER;
- 615   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=BLANK;
- 616   5                      }
- 617   4                      else
- 618   4                      {
- 619   5                      
- 620   5                      }
- 621   4                    }
- 622   3                  break;
- 623   3                  
- 624   3                  case WALL:
- 625   3                    
- 626   3                  break;
- 627   3                  
- 628   3                  case BLANK:
- 629   3                    if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]==PLAYER_DES)
- 630   3                    {
- 631   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-1]=PLAYER;
- 632   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=DES;
- 633   4                    }
- 634   3                    else
- 635   3                    {
- 636   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-1]=PLAYER;
- 637   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=BLANK;
- 638   4                    }
- 639   3                  
- 640   3                  break;
- 641   3                  
- 642   3                  case DES:
- 643   3                    if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]==PLAYER_DES)
- 644   3                    {
- 645   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-1]=PLAYER_DES;
- 646   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=DES;
- 647   4                    }
- 648   3                    else
- 649   3                    {
- 650   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-1]=PLAYER_DES;
- 651   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=BLANK;
- 652   4                    }
- 653   3                  
- 654   3                  break;
- 655   3                }
- 656   2                break;
- 657   2              case MOVE_RIGHT:
- 658   2                switch(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+1])
- 659   2                {
- 660   3                  case BOX:
- 661   3                    if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]==PLAYER_DES)
- 662   3                    {
- 663   4                      if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+2]==BLANK)
- 664   4                      {
- 665   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+2]=BOX;
- 666   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+1]=PLAYER;
- 667   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=DES;
- 668   5                      }
- 669   4                      else if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+2]==DES)
- 670   4                      {
- 671   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+2]=BOX_DES;
- 672   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+1]=PLAYER;
- 673   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=DES;
- 674   5                      }
-C51 COMPILER V9.56.0.0   MAIN                                                              02/06/2023 10:10:14 PAGE 12  
+ 613   3                    
+ 614   3                    else
+ 615   3                    {
+ 616   4                      if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-2]==BLANK)
+ 617   4                      {
+ 618   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-2]=BOX;
+ 619   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-1]=PLAYER;
+ 620   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=BLANK;
+ 621   5                      }
+ 622   4                      else if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-2]==DES)
+ 623   4                      {
+ 624   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-2]=BOX_DES;
+ 625   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-1]=PLAYER;
+ 626   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=BLANK;
+ 627   5                      }
+ 628   4                      else
+ 629   4                      {
+ 630   5                      
+ 631   5                      }
+ 632   4                    }
+ 633   3                  break;
+ 634   3                  
+ 635   3                  case WALL:
+ 636   3                    
+ 637   3                  break;
+ 638   3                  
+ 639   3                  case BLANK:
+ 640   3                    if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]==PLAYER_DES)
+ 641   3                    {
+ 642   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-1]=PLAYER;
+ 643   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=DES;
+ 644   4                    }
+ 645   3                    else
+ 646   3                    {
+ 647   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-1]=PLAYER;
+ 648   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=BLANK;
+ 649   4                    }
+ 650   3                  
+ 651   3                  break;
+ 652   3                  
+ 653   3                  case DES:
+ 654   3                    if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]==PLAYER_DES)
+ 655   3                    {
+ 656   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-1]=PLAYER_DES;
+ 657   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=DES;
+ 658   4                    }
+ 659   3                    else
+ 660   3                    {
+ 661   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL-1]=PLAYER_DES;
+ 662   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=BLANK;
+ 663   4                    }
+ 664   3                  
+ 665   3                  break;
+ 666   3                }
+ 667   2                break;
+ 668   2              case MOVE_RIGHT:
+ 669   2                switch(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+1])
+ 670   2                {
+ 671   3                  case BOX:
+ 672   3                    if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]==PLAYER_DES)
+ 673   3                    {
+ 674   4                      if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+2]==BLANK)
+C51 COMPILER V9.56.0.0   MAIN                                                              02/24/2023 09:12:04 PAGE 12  
 
- 675   4                      else
- 676   4                      {
- 677   5                      
- 678   5                      }
- 679   4                    }
- 680   3                    
- 681   3                    else
- 682   3                    {
- 683   4                      if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+2]==BLANK)
- 684   4                      {
- 685   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+2]=BOX;
- 686   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+1]=PLAYER;
- 687   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=BLANK;
- 688   5                      }
- 689   4                      else if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+2]==DES)
- 690   4                      {
- 691   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+2]=BOX_DES;
- 692   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+1]=PLAYER;
- 693   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=BLANK;
- 694   5                      }
- 695   4                      else
- 696   4                      {
- 697   5                      
- 698   5                      }
- 699   4                    }
- 700   3                  break;
- 701   3                  
- 702   3                  case WALL:
- 703   3                    
- 704   3                  break;
- 705   3                  
- 706   3                  case BLANK:
- 707   3                    if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]==PLAYER_DES)
- 708   3                    {
- 709   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+1]=PLAYER;
- 710   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=DES;
- 711   4                    }
- 712   3                    else
- 713   3                    {
- 714   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+1]=PLAYER;
- 715   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=BLANK;
- 716   4                    }
- 717   3                  
- 718   3                  break;
- 719   3                  
- 720   3                  case DES:
- 721   3                    if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]==PLAYER_DES)
- 722   3                    {
- 723   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+1]=PLAYER_DES;
- 724   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=DES;
- 725   4                    }
- 726   3                    else
- 727   3                    {
- 728   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+1]=PLAYER_DES;
- 729   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=BLANK;
- 730   4                    }
- 731   3                  
- 732   3                  break;
- 733   3                }
- 734   2                break;
- 735   2              
- 736   2        }
-C51 COMPILER V9.56.0.0   MAIN                                                              02/06/2023 10:10:14 PAGE 13  
+ 675   4                      {
+ 676   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+2]=BOX;
+ 677   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+1]=PLAYER;
+ 678   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=DES;
+ 679   5                      }
+ 680   4                      else if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+2]==DES)
+ 681   4                      {
+ 682   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+2]=BOX_DES;
+ 683   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+1]=PLAYER;
+ 684   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=DES;
+ 685   5                      }
+ 686   4                      else
+ 687   4                      {
+ 688   5                      
+ 689   5                      }
+ 690   4                    }
+ 691   3                    
+ 692   3                    else
+ 693   3                    {
+ 694   4                      if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+2]==BLANK)
+ 695   4                      {
+ 696   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+2]=BOX;
+ 697   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+1]=PLAYER;
+ 698   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=BLANK;
+ 699   5                      }
+ 700   4                      else if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+2]==DES)
+ 701   4                      {
+ 702   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+2]=BOX_DES;
+ 703   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+1]=PLAYER;
+ 704   5                        MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=BLANK;
+ 705   5                      }
+ 706   4                      else
+ 707   4                      {
+ 708   5                      
+ 709   5                      }
+ 710   4                    }
+ 711   3                  break;
+ 712   3                  
+ 713   3                  case WALL:
+ 714   3                    
+ 715   3                  break;
+ 716   3                  
+ 717   3                  case BLANK:
+ 718   3                    if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]==PLAYER_DES)
+ 719   3                    {
+ 720   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+1]=PLAYER;
+ 721   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=DES;
+ 722   4                    }
+ 723   3                    else
+ 724   3                    {
+ 725   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+1]=PLAYER;
+ 726   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=BLANK;
+ 727   4                    }
+ 728   3                  
+ 729   3                  break;
+ 730   3                  
+ 731   3                  case DES:
+ 732   3                    if(MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]==PLAYER_DES)
+ 733   3                    {
+ 734   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+1]=PLAYER_DES;
+ 735   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=DES;
+ 736   4                    }
+C51 COMPILER V9.56.0.0   MAIN                                                              02/24/2023 09:12:04 PAGE 13  
 
- 737   1          
- 738   1      }
- 739          
- 740          void timer0 (void) interrupt 1
- 741          {
- 742   1        Tcount++;  //50ms中断次数计数器加一 ，如果等于20,1s到，主程序中查询此变量计时，并清零。
- 743   1      }
- 744          
- 745              
+ 737   3                    else
+ 738   3                    {
+ 739   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL+1]=PLAYER_DES;
+ 740   4                      MAP[LEVEL_CNT][PLAYER_ROW][PLAYER_COL]=BLANK;
+ 741   4                    }
+ 742   3                  
+ 743   3                  break;
+ 744   3                }
+ 745   2                break;
+ 746   2              
+ 747   2        }
+ 748   1        
+ 749   1      }
+ 750          
+ 751          void timer0 (void) interrupt 1
+ 752          {
+ 753   1        Tcount++;  //50ms中断次数计数器加一 ，如果等于20,1s到，主程序中查询此变量计时，并清零。
+ 754   1        if(Tcount==19)
+ 755   1        {
+ 756   2          Tcount=0;
+ 757   2          second++;
+ 758   2          if(second==59)
+ 759   2          {
+ 760   3            second=0;
+ 761   3            minute++;
+ 762   3          }
+ 763   2        }
+ 764   1      }
+ 765          
+ 766              
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =   1982    ----
+   CODE SIZE        =   2057    ----
    CONSTANT SIZE    =   2560    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =     79       8
+   DATA SIZE        =     85       8
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.
